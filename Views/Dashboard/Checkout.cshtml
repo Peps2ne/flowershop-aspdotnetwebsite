@@ -1,0 +1,266 @@
+@{
+    ViewData["Title"] = "Güvenli Ödeme - Bloom & Co.";
+    decimal total = ViewBag.Total ?? 0;
+    decimal balance = ViewBag.Balance ?? 0;
+    string cartJson = ViewBag.CartJson ?? "[]";
+    bool canPayWithBalance = balance >= total;
+}
+
+<div class="inner-container">
+    <div class="row g-5">
+        <!-- Delivery and Payment (Left) -->
+        <div class="col-lg-7 reveal-on-scroll">
+            <h2 class="fw-bold text-main mb-4">Teslimat & Ödeme</h2>
+
+            @if (TempData["Error"] != null)
+            {
+                <div class="glass-panel p-3 bg-danger text-white border-0 mb-4 animate__animated animate__shakeX">
+                    <i class="fa-solid fa-circle-exclamation me-2"></i> @TempData["Error"]
+                </div>
+            }
+
+            <form asp-action="ProcessCheckout" method="post" id="checkoutForm">
+                <input type="hidden" name="cartJson" id="hfCartJson" value="@cartJson" />
+                <input type="hidden" name="total" value="@total.ToString(System.Globalization.CultureInfo.InvariantCulture)" />
+                <input type="hidden" name="paymentMethod" id="hfPaymentMethod" value="card" />
+                <input type="hidden" name="cardNumber" id="hfCardNumber" value="" />
+
+                <!-- Shipping Addresses -->
+                <div class="mb-5">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="fw-bold text-main m-0">Teslimat Adresi Seçin</h5>
+                    </div>
+                    
+                    <div class="row g-3 mb-4">
+                        @if (ViewBag.Addresses != null && ((List<FlowerShopApp.Models.Address>)ViewBag.Addresses).Count > 0)
+                        {
+                            @foreach (var addr in (List<FlowerShopApp.Models.Address>)ViewBag.Addresses)
+                            {
+                                <div class="col-md-6">
+                                    <div class="glass-panel p-3 address-card h-100" onclick="selectAddress(this, @addr.Id)" style="cursor:pointer; transition: var(--transition);">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span class="badge bg-rose text-accent rounded-pill">@addr.Title</span>
+                                            <input type="radio" name="selectedAddressId" value="@addr.Id" class="form-check-input" onclick="event.stopPropagation()">
+                                        </div>
+                                        <div class="fw-bold text-main small">@addr.FullName</div>
+                                        <div class="text-muted small">@addr.PhoneNumber</div>
+                                        <div class="text-muted small mt-2">@addr.City</div>
+                                        <div class="text-muted small text-truncate">@addr.FullAddress</div>
+                                    </div>
+                                </div>
+                            }
+                        }
+                        
+                        <div class="col-md-6">
+                            <div class="glass-panel p-3 address-card h-100 d-flex flex-column align-items-center justify-content-center text-center bg-white" 
+                                 onclick="selectAddress(this, 0)" style="cursor:pointer; border-style: dashed; border-width: 2px;">
+                                <input type="radio" name="selectedAddressId" value="0" class="d-none">
+                                <i class="fa-solid fa-plus-circle text-accent fs-3 mb-2"></i>
+                                <span class="fw-bold text-main small">Yeni Adres Ekle</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New Address Form -->
+                    <div id="newAddressSection" class="glass-panel p-4 bg-white" style="@(ViewBag.Addresses != null && ((List<FlowerShopApp.Models.Address>)ViewBag.Addresses).Count > 0 ? "display:none;" : "")">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">Adres Başlığı</label>
+                                <input type="text" name="newAddressTitle" class="form-control rounded-pill px-3" placeholder="Ev, İş...">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">Alıcı Ad Soyad</label>
+                                <input type="text" name="newAddressFullName" class="form-control rounded-pill px-3" placeholder="Örn: Ayşe Yılmaz">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">Telefon</label>
+                                <input type="text" name="newAddressPhone" class="form-control rounded-pill px-3" placeholder="05XX XXX XX XX">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">Şehir</label>
+                                <input type="text" name="newAddressCity" class="form-control rounded-pill px-3" placeholder="İstanbul">
+                            </div>
+                            <div class="col-12">
+                                <label class="small fw-bold text-muted mb-1">Açık Adres</label>
+                                <textarea name="newAddressFull" class="form-control rounded-4 px-3" rows="2" placeholder="Mahalle, sokak, bina no..."></textarea>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Method -->
+                <div class="mb-4">
+                    <h5 class="fw-bold text-main mb-3">Ödeme Yöntemi</h5>
+                    <div class="d-flex gap-3 mb-4">
+                        <button type="button" id="tabCard" class="btn btn-accent rounded-pill px-4 active-tab" onclick="switchTab('card')">
+                            <i class="fa-solid fa-credit-card me-2"></i> Kredi Kartı
+                        </button>
+                        <button type="button" id="tabWallet" class="btn btn-outline-accent rounded-pill px-4" onclick="switchTab('wallet')">
+                            <i class="fa-solid fa-wallet me-2"></i> Bakiye (@balance.ToString("N2") ₺)
+                        </button>
+                    </div>
+
+                    <div id="panelCard" class="glass-panel p-4 bg-white">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="small fw-bold text-muted mb-1">Kart Numarası</label>
+                                <div class="input-group glass-panel p-1 border-1">
+                                    <input type="text" id="cardNumberInput" class="form-control border-0 bg-transparent ps-3" placeholder="0000 0000 0000 0000" maxlength="19">
+                                    <span class="input-group-text border-0 bg-transparent pe-3 text-muted">
+                                        <i class="fa-brands fa-cc-visa me-2"></i>
+                                        <i class="fa-brands fa-cc-mastercard"></i>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">Son Kullanma</label>
+                                <input type="text" class="form-control rounded-pill px-3" placeholder="AA/YY" maxlength="5">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="small fw-bold text-muted mb-1">CVV</label>
+                                <input type="text" class="form-control rounded-pill px-3" placeholder="***" maxlength="3">
+                            </div>
+                        </div>
+                        <button type="button" onclick="submitPayment('card')" class="btn btn-accent w-100 rounded-pill py-3 mt-4 fs-5 fw-bold shadow-soft">
+                            Siparişi Tamamla (@total.ToString("N2") ₺)
+                        </button>
+                    </div>
+
+                    <div id="panelWallet" class="glass-panel p-4 bg-white" style="display:none;">
+                        @if (canPayWithBalance)
+                        {
+                            <div class="p-3 bg-sage rounded-4 text-center mb-3">
+                                <i class="fa-solid fa-circle-check text-success fs-3 mb-2"></i>
+                                <p class="m-0 fw-bold text-main">Bakiyeniz yeterli.</p>
+                                <small class="text-muted">Mevcut: @balance.ToString("N2") ₺</small>
+                            </div>
+                            <button type="button" onclick="submitPayment('wallet')" class="btn btn-accent w-100 rounded-pill py-3 fs-5 fw-bold shadow-soft">
+                                Bakiyeden Öde (@total.ToString("N2") ₺)
+                            </button>
+                        }
+                        else
+                        {
+                            <div class="p-3 bg-rose rounded-4 text-center mb-3">
+                                <i class="fa-solid fa-triangle-exclamation text-accent fs-3 mb-2"></i>
+                                <p class="m-0 fw-bold text-main">Bakiyeniz yetersiz.</p>
+                                <small class="text-muted">Eksik: @((total - balance).ToString("N2")) ₺</small>
+                            </div>
+                            <a asp-controller="Dashboard" asp-action="Balance" class="btn btn-outline-accent w-100 rounded-pill py-3 fw-bold">
+                                Bakiye Yükle
+                            </a>
+                        }
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <!-- Order Summary (Right) -->
+        <div class="col-lg-5 reveal-on-scroll">
+            <div class="glass-panel p-4 position-sticky" style="top: 120px;">
+                <h5 class="fw-bold text-main mb-4">Sipariş Özeti</h5>
+                
+                <div id="orderItems" class="mb-4">
+                    <!-- JS Filled -->
+                </div>
+
+                <div class="pt-4 border-top">
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted fw-bold">Ara Toplam</span>
+                        <span class="text-main fw-bold">@total.ToString("N2") ₺</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted fw-bold">Teslimat</span>
+                        <span class="text-success fw-bold">Ücretsiz</span>
+                    </div>
+                    <div class="d-flex justify-content-between align-items-center mt-3 pt-3 border-top">
+                        <span class="fs-4 fw-bold text-main">Toplam</span>
+                        <span class="fs-3 fw-bold text-accent">@total.ToString("N2") ₺</span>
+                    </div>
+                </div>
+
+                <div class="mt-5 p-3 glass-panel bg-rose bg-opacity-50 text-center border-0">
+                    <p class="small text-muted mb-0 fw-bold">
+                        <i class="fa-solid fa-shield-halved text-accent me-2"></i>
+                        Bloom & Co. 256-bit SSL şifreleme ile ödeme bilgileriniz %100 güvence altındadır.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .address-card.selected { border-color: var(--accent) !important; background: var(--bg-primary) !important; transform: scale(1.02); }
+    .active-tab { box-shadow: 0 0 0 4px rgba(212,114,138,0.2) !important; }
+</style>
+
+@section Scripts {
+<script>
+    (function() {
+        try {
+            var items = JSON.parse(document.getElementById('hfCartJson').value);
+            var html = '';
+            items.forEach(function(item) {
+                html += `
+                <div class="d-flex align-items-center gap-3 mb-3">
+                    <div class="rounded-3 overflow-hidden" style="width: 60px; height: 60px; flex-shrink: 0;">
+                        <img src="${item.img||item.Img}" class="w-100 h-100" style="object-fit:cover;" onerror="this.src='https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=200'">
+                    </div>
+                    <div class="flex-grow-1">
+                        <div class="fw-bold text-main small text-truncate" style="max-width: 180px;">${item.name}</div>
+                        <div class="text-muted-soft x-small fw-bold">${item.qty} Adet</div>
+                    </div>
+                    <div class="fw-bold text-main small">${(parseFloat(item.price) * item.qty).toLocaleString('tr-TR', {minimumFractionDigits:2})} ₺</div>
+                </div>`;
+            });
+            document.getElementById('orderItems').innerHTML = html;
+        } catch(e) {}
+    })();
+
+    function selectAddress(card, id) {
+        document.querySelectorAll('.address-card').forEach(c => c.classList.remove('selected'));
+        card.classList.add('selected');
+        card.querySelector('input[type="radio"]').checked = true;
+        document.getElementById('newAddressSection').style.display = (id === 0) ? 'block' : 'none';
+    }
+
+    function switchTab(tab) {
+        document.getElementById('panelCard').style.display = (tab === 'card') ? 'block' : 'none';
+        document.getElementById('panelWallet').style.display = (tab === 'wallet') ? 'block' : 'none';
+        document.getElementById('hfPaymentMethod').value = tab;
+        
+        document.getElementById('tabCard').className = (tab === 'card') ? 'btn btn-accent rounded-pill px-4 active-tab' : 'btn btn-outline-accent rounded-pill px-4';
+        document.getElementById('tabWallet').className = (tab === 'wallet') ? 'btn btn-accent rounded-pill px-4 active-tab' : 'btn btn-outline-accent rounded-pill px-4';
+    }
+
+    function submitPayment(method) {
+        const addrId = document.querySelector('input[name="selectedAddressId"]:checked')?.value;
+        if (addrId === "0" && !document.querySelector('textarea[name="newAddressFull"]').value.trim()) {
+            Swal.fire('Hata', 'Lütfen teslimat adresini girin.', 'error');
+            return;
+        }
+
+        if (method === 'card') {
+            const cn = document.getElementById('cardNumberInput').value.replace(/\s/g,'');
+            if (cn.length < 16) {
+                Swal.fire('Hata', 'Geçerli bir kart numarası girin.', 'error');
+                return;
+            }
+            document.getElementById('hfCardNumber').value = cn;
+        }
+
+        localStorage.removeItem(typeof BloomCart !== 'undefined' ? BloomCart.storageKey : 'bloom_cart_items');
+        document.getElementById('checkoutForm').submit();
+    }
+
+    const cnInput = document.getElementById('cardNumberInput');
+    if (cnInput) {
+        cnInput.addEventListener('input', function(e) {
+            let v = e.target.value.replace(/\D/g,'');
+            let f = '';
+            for (let i = 0; i < v.length; i++) { if (i > 0 && i % 4 === 0) f += ' '; f += v[i]; }
+            e.target.value = f;
+        });
+    }
+</script>
+}

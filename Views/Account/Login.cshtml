@@ -1,0 +1,33 @@
+@model FlowerShopApp.ViewModels.LoginViewModel
+@{
+    ViewData["Title"] = "Giriş Yap";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <span class="brand-badge">🌸 Bloom & Co.</span>
+        <h2>Tekrar Hoş Geldiniz</h2>
+        <p>Ayrıcalıklı çiçek deneyiminize devam etmek için giriş yapın.</p>
+        
+        <form asp-action="Login" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert rounded-3 py-2 px-3 text-danger border-0" style="background:#FADADD; font-weight:600;"></div>
+            
+            <div class="form-group">
+                <label asp-for="Username">Kullanıcı Adı</label>
+                <input asp-for="Username" class="form-control" placeholder="Kullanıcı adınızı girin" />
+                <span asp-validation-for="Username" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Password">Şifre</label>
+                <input asp-for="Password" class="form-control" placeholder="Şifrenizi girin" />
+                <span asp-validation-for="Password" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-accent btn-block shadow-sm">Giriş Yap</button>
+            <div class="auth-links mt-4">
+                <p>Hesabınız yok mu? <a asp-action="Register">Buradan kayıt olun</a></p>
+            </div>
+        </form>
+    </div>
+</div>

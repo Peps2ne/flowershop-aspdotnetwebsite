@@ -1,0 +1,63 @@
+@model IEnumerable<FlowerShopApp.Models.Product>
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Ürünleri Yönet";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h5 class="fw-bold m-0" style="color: #3D2C33;">Tüm Ürünler (@Model.Count())</h5>
+    <a asp-action="Create" class="btn btn-accent rounded-pill px-4 fw-bold shadow-sm">
+        <i class="fa-solid fa-plus-circle me-2"></i> Yeni Çiçek Ekle
+    </a>
+</div>
+
+<div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+    <div class="table-responsive">
+        <table class="table table-hover align-middle m-0">
+            <thead class="table-light">
+                <tr>
+                    <th>Görsel</th>
+                    <th>Ürün Adı</th>
+                    <th>Kategori</th>
+                    <th>Fiyat</th>
+                    <th>Rozet</th>
+                    <th class="text-end">İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>
+                            <img src="@item.ImageUrl" alt="@item.Name" style="width: 50px; height: 50px; object-fit: cover;" class="rounded-3 shadow-sm" onerror="this.src='https://images.unsplash.com/photo-1563241527-3004b7be0ffd?w=50&q=80'" />
+                        </td>
+                        <td class="fw-bold" style="color: #3D2C33;">@item.Name<br><small class="text-muted">Stok: @item.Stock</small></td>
+                        <td><span class="badge bg-secondary">@(item.Category?.Name ?? "-")</span></td>
+                        <td class="fw-bold text-accent">@item.Price.ToString("0.00") ₺</td>
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.Badge))
+                            {
+                                <span class="badge bg-@item.BadgeColor">@item.Badge</span>
+                            }
+                            else
+                            {
+                                <span class="text-muted small">-</span>
+                            }
+                        </td>
+                        <td class="text-end">
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-outline-primary rounded-pill px-3 me-2">Düzenle</a>
+                            <form asp-action="Delete" asp-route-id="@item.Id" style="display:inline;" onsubmit="return confirm('Bu ürünü silmek istediğinize emin misiniz?');">
+                                <button type="submit" class="btn btn-sm btn-outline-danger rounded-pill px-3"><i class="fa-solid fa-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+                @if(!Model.Any())
+                {
+                    <tr><td colspan="6" class="text-center text-muted py-4">Sistemde henüz ürün yok.</td></tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

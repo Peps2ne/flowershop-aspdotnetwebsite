@@ -1,0 +1,331 @@
+@model IEnumerable<FlowerShopApp.Models.Product>
+@{
+    ViewData["Title"] = "Bloom & Co. — Taze Çiçek Atölyesi";
+}
+
+<!-- ── HERO ─────────────────────────────────────────────────────────── -->
+<div class="hero-section">
+    <div class="hero-content reveal-on-scroll">
+        <div class="d-inline-flex align-items-center gap-2 mb-4 px-4 py-2 rounded-pill"
+             style="background: var(--pink-light); border: 1.5px solid var(--peach);">
+            <i class="fa-solid fa-leaf text-accent fs-6"></i>
+            <span class="fw-bold small text-accent text-uppercase" style="letter-spacing: 1.2px;">Taze Çiçek Atölyesi</span>
+        </div>
+        <h1 class="hero-title mb-4">
+            Sevginizi <br>
+            <span style="color: var(--accent); font-style: italic;">Çiçeklerle</span> Anlatın
+        </h1>
+        <p class="hero-subtitle">
+            Her bir yaprakta zarafet, her bir renkte aşk var. Atölyemizden özenle hazırlanan taze buketlerimizle özel anlarınızı ölümsüzleştirin.
+        </p>
+        <div class="d-flex flex-wrap gap-3 align-items-center">
+            <a asp-action="Products" class="btn btn-accent btn-lg px-5 py-3 rounded-pill fw-bold shadow-soft">
+                <i class="fa-solid fa-basket-shopping me-2"></i>Koleksiyonu Keşfet
+            </a>
+            <div class="d-flex align-items-center gap-3">
+                <i class="fa-brands fa-whatsapp fs-2" style="color: #25D366;"></i>
+                <div>
+                    <div class="small text-muted fw-bold text-uppercase" style="letter-spacing: 1px; font-size: 0.7rem;">Hızlı Sipariş</div>
+                    <div class="fw-bold" style="color: var(--text-main);">+90 (555) 123 45 67</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Trust bar -->
+        <div class="d-flex flex-wrap gap-4 mt-5 pt-3">
+            <div class="d-flex align-items-center gap-2">
+                <div class="trust-icon" style="width:40px;height:40px;background:var(--sage);color:#5A8C6A;font-size:1rem;margin-bottom:0;">
+                    <i class="fa-solid fa-truck-fast"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small" style="color:var(--text-main);">Aynı Gün Teslimat</div>
+                    <div class="text-muted" style="font-size:0.75rem;">Özel araçla kapınıza</div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="trust-icon" style="width:40px;height:40px;background:#FFF4EE;color:#C07050;font-size:1rem;margin-bottom:0;">
+                    <i class="fa-solid fa-seedling"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small" style="color:var(--text-main);">Garanti Tazelik</div>
+                    <div class="text-muted" style="font-size:0.75rem;">Seradan direkt atölyemize</div>
+                </div>
+            </div>
+            <div class="d-flex align-items-center gap-2">
+                <div class="trust-icon" style="width:40px;height:40px;background:var(--pink-light);color:var(--accent);font-size:1rem;margin-bottom:0;">
+                    <i class="fa-solid fa-pen-nib"></i>
+                </div>
+                <div>
+                    <div class="fw-bold small" style="color:var(--text-main);">Özel Tasarım</div>
+                    <div class="text-muted" style="font-size:0.75rem;">Kişiye özel aranjman sanatı</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="hero-visual reveal-on-scroll">
+        <div class="hero-circle"></div>
+        <img src="https://images.unsplash.com/photo-1563241527-3001cb380bb0?w=800&q=80"
+             class="hero-main-img" alt="Bloom & Co. Premium Çiçek" />
+        <div class="floating-badge fb-1">
+            <i class="fa-solid fa-star text-warning"></i>
+            <div>
+                <div class="small fw-bold" style="color:var(--text-main);">50K+ Mutlu Müşteri</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);">★★★★★ 4.9/5</div>
+            </div>
+        </div>
+        <div class="floating-badge fb-2">
+            <i class="fa-solid fa-certificate" style="color:var(--accent);"></i>
+            <div>
+                <div class="small fw-bold" style="color:var(--text-main);">Taze Bloom Kalitesi</div>
+                <div style="font-size:0.72rem;color:var(--text-muted);">15+ Yıl Tecrübe</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── KATEGORİLER ─────────────────────────────────────────────────── -->
+<div class="inner-container">
+    <section class="my-5 py-4 reveal-on-scroll">
+        <div class="text-center mb-5">
+            <div class="section-divider mx-auto"></div>
+            <h2 class="section-title text-center">Özel Koleksiyonlar</h2>
+            <p class="text-muted fw-bold" style="max-width:450px;margin:0 auto;">Sevdikleriniz için en özel çiçek aranjmanlarını keşfedin.</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4">
+                <a href="/Home/Products" class="d-block position-relative rounded-4 overflow-hidden category-banner"
+                   style="height:320px; display:block;">
+                    <img src="https://images.unsplash.com/photo-1548094891-c4ba474eb5c1?w=800&q=80"
+                         class="w-100 h-100" style="object-fit:cover; transition: transform 0.6s ease;" alt="Gül"
+                         onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" />
+                    <div class="position-absolute inset-0 bg-dark-gradient d-flex flex-column justify-content-end p-4">
+                        <span class="badge rounded-pill mb-2" style="background:var(--accent);width:fit-content;">Çok Satan</span>
+                        <h4 class="text-white fw-bold font-serif mb-1">Gül Koleksiyonu</h4>
+                        <span class="text-white-50 small fw-bold">Keşfet <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/Home/Products" class="d-block position-relative rounded-4 overflow-hidden category-banner"
+                   style="height:320px; display:block;">
+                    <img src="https://images.unsplash.com/photo-1601618778007-42861c8f3521?w=800&q=80"
+                         class="w-100 h-100" style="object-fit:cover; transition: transform 0.6s ease;" alt="Orkide"
+                         onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" />
+                    <div class="position-absolute inset-0 bg-dark-gradient d-flex flex-column justify-content-end p-4">
+                        <span class="badge rounded-pill mb-2" style="background:#9B59B6;width:fit-content;">Özel Seçki</span>
+                        <h4 class="text-white fw-bold font-serif mb-1">Zarif Orkideler</h4>
+                        <span class="text-white-50 small fw-bold">Keşfet <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="/Home/Products" class="d-block position-relative rounded-4 overflow-hidden category-banner"
+                   style="height:320px; display:block;">
+                    <img src="https://images.unsplash.com/photo-1457089328109-e5d9f7ad9c12?w=800&q=80"
+                         class="w-100 h-100" style="object-fit:cover; transition: transform 0.6s ease;" alt="Mevsim"
+                         onmouseover="this.style.transform='scale(1.06)'" onmouseout="this.style.transform='scale(1)'" />
+                    <div class="position-absolute inset-0 bg-dark-gradient d-flex flex-column justify-content-end p-4">
+                        <span class="badge rounded-pill mb-2" style="background:#27AE60;width:fit-content;">Mevsimlik</span>
+                        <h4 class="text-white fw-bold font-serif mb-1">Mevsim Çiçekleri</h4>
+                        <span class="text-white-50 small fw-bold">Keşfet <i class="fa-solid fa-arrow-right ms-1"></i></span>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── ÜRÜNLER ───────────────────────────────────────────────────── -->
+    <section class="my-5 py-4 reveal-on-scroll">
+        <div class="d-flex justify-content-between align-items-end mb-5">
+            <div>
+                <div class="section-divider mb-3" style="margin:0 0 12px 0;"></div>
+                <h2 class="section-title mb-1">Öne Çıkan Buketler</h2>
+                <p class="text-muted fw-bold mb-0">Atölyemizin en sevilen tasarımları</p>
+            </div>
+            <a asp-action="Products" class="btn btn-outline-accent rounded-pill px-4 fw-bold">
+                Tümünü Gör <i class="fa-solid fa-arrow-right ms-2"></i>
+            </a>
+        </div>
+
+        <div class="row g-4">
+            @foreach (var item in Model.Take(3))
+            {
+                <div class="col-md-4 reveal-on-scroll">
+                    <div class="flower-card">
+                        <div class="flower-card-img position-relative">
+                            <a asp-action="ProductDetail" asp-route-slug="@item.Slug" asp-route-id="@item.Id">
+                                <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=600&q=80" : item.ImageUrl)"
+                                     alt="@item.Name"
+                                     onerror="this.src='https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=600&q=80'" />
+                            </a>
+                            @if (!string.IsNullOrEmpty(item.Badge))
+                            {
+                                <span class="position-absolute top-0 end-0 m-3 badge bg-@item.BadgeColor rounded-pill px-3 py-2 shadow-sm">@item.Badge</span>
+                            }
+                        </div>
+                        <div class="flower-card-body">
+                            <div class="flower-card-category">@(item.Category?.Name ?? "Çiçek")</div>
+                            <a asp-action="ProductDetail" asp-route-slug="@item.Slug" asp-route-id="@item.Id" class="text-decoration-none">
+                                <h3 class="flower-card-title">@item.Name</h3>
+                            </a>
+                            <p class="flower-card-desc">@item.Description</p>
+                            <div class="flower-card-price-row">
+                                <div class="flower-card-price">₺@item.Price.ToString("N2", new System.Globalization.CultureInfo("tr-TR")) <span>/ Buket</span></div>
+                                <div class="small fw-bold @(item.Stock > 0 ? "text-success" : "text-danger")">
+                                    @(item.Stock > 0 ? "Stokta Var" : "Tükendi")
+                                </div>
+                            </div>
+                            <div class="flower-card-actions">
+                                <button class="btn-cart-add"
+                                        onclick="BloomCart.addItem({ id: @item.Id, name: '@Html.Raw(item.Name.Replace("'", "\\'"))', price: @item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture), img: '@item.ImageUrl' })">
+                                    <i class="fa-solid fa-basket-shopping"></i> Sepete Ekle
+                                </button>
+                                <button class="btn-wishlist" onclick="toggleWishlistHome(@item.Id, this)">
+                                    <i class="fa-regular fa-heart"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </section>
+
+    <!-- ── HAKKIMIZDA ────────────────────────────────────────────────── -->
+    <section class="my-5 py-5 reveal-on-scroll">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-5 position-relative">
+                <img src="https://images.unsplash.com/photo-1523694559144-42edc79d4bd5?w=800&q=80"
+                     class="w-100 rounded-4 shadow-xl" alt="Bloom & Co. Atölye"
+                     style="height:500px; object-fit:cover;" />
+                <div class="position-absolute glass-panel p-4 shadow-soft"
+                     style="bottom:40px; right:-30px; max-width:200px; background:white !important;">
+                    <div class="text-center">
+                        <div class="fs-2 fw-bold text-accent">99%</div>
+                        <div class="small text-muted fw-bold">Müşteri Memnuniyeti</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6 offset-lg-1">
+                <div class="section-divider"></div>
+                <h2 class="section-title mb-4">Bloom & Co. <span style="color:var(--accent); font-style:italic;">Farkı</span></h2>
+                <p class="fs-5 text-muted lh-lg fw-medium mb-4">
+                    2009'dan bu yana, her bir çiçeği kendi karakterine uygun olarak özenle tasarlıyor, doğanın güzelliğini sevdiklerinize ulaştırıyoruz.
+                </p>
+                <div class="row g-4 mt-2">
+                    <div class="col-6">
+                        <div class="feature-box text-center">
+                            <div class="trust-icon mx-auto" style="background:var(--pink-light);color:var(--accent);">
+                                <i class="fa-solid fa-award"></i>
+                            </div>
+                            <h4 class="fw-bold mt-3 mb-1" style="color:var(--text-main);">15+</h4>
+                            <p class="text-muted small fw-bold mb-0">Yıl Tecrübe</p>
+                        </div>
+                    </div>
+                    <div class="col-6">
+                        <div class="feature-box text-center">
+                            <div class="trust-icon mx-auto" style="background:var(--sage);color:#5A8C6A;">
+                                <i class="fa-solid fa-truck-fast"></i>
+                            </div>
+                            <h4 class="fw-bold mt-3 mb-1" style="color:var(--text-main);">50K+</h4>
+                            <p class="text-muted small fw-bold mb-0">Mutlu Teslimat</p>
+                        </div>
+                    </div>
+                </div>
+                <a asp-action="About" class="btn btn-accent rounded-pill px-5 py-3 fw-bold mt-4 d-inline-block">
+                    <i class="fa-solid fa-leaf me-2"></i> Hikayemizi Keşfet
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── TESTIMONIAL ──────────────────────────────────────────────── -->
+    <section class="my-5 py-5 reveal-on-scroll">
+        <div class="text-center mb-5">
+            <div class="section-divider mx-auto"></div>
+            <h2 class="section-title text-center">Müşterilerimiz Ne Diyor?</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="glass-panel p-4 h-100">
+                    <div class="text-warning mb-3 fs-5">★★★★★</div>
+                    <p class="text-muted fw-medium lh-lg mb-4">"Annemin doğum günü için sipariş ettim, buket muhteşemdi! Aynı gün teslim, ambalaj çok özenli. Kesinlikle tavsiye ediyorum."</p>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name=Ayse+Yilmaz&background=FADADD&color=D4728A&size=40" class="rounded-circle" width="40" alt="Ayşe" />
+                        <div>
+                            <div class="fw-bold small" style="color:var(--text-main);">Ayşe Yılmaz</div>
+                            <div class="text-muted" style="font-size:0.75rem;">İstanbul</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel p-4 h-100" style="border-color:var(--peach);">
+                    <div class="text-warning mb-3 fs-5">★★★★★</div>
+                    <p class="text-muted fw-medium lh-lg mb-4">"Her ay düzenli sipariş veriyorum. Çiçekler her seferinde taze ve güzel geliyor. Bloom & Co. artık benim için vazgeçilmez!"</p>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name=Mehmet+Kaya&background=DCEEDC&color=5A8C6A&size=40" class="rounded-circle" width="40" alt="Mehmet" />
+                        <div>
+                            <div class="fw-bold small" style="color:var(--text-main);">Mehmet Kaya</div>
+                            <div class="text-muted" style="font-size:0.75rem;">Ankara</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="glass-panel p-4 h-100">
+                    <div class="text-warning mb-3 fs-5">★★★★★</div>
+                    <p class="text-muted fw-medium lh-lg mb-4">"Düğün masa çiçekleri için tercih ettim. Tasarım tam hayal ettiğim gibiydi, hatta daha iyisiydi. Çok teşekkürler!"</p>
+                    <div class="d-flex align-items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name=Zeynep+Demir&background=FFF4EE&color=C07050&size=40" class="rounded-circle" width="40" alt="Zeynep" />
+                        <div>
+                            <div class="fw-bold small" style="color:var(--text-main);">Zeynep Demir</div>
+                            <div class="text-muted" style="font-size:0.75rem;">İzmir</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ── CTA ──────────────────────────────────────────────────────── -->
+    <section class="my-5 reveal-on-scroll">
+        <div class="glass-panel p-5 text-center" style="background: linear-gradient(135deg, var(--pink-light) 0%, var(--peach) 100%) !important; border: none;">
+            <i class="fa-solid fa-leaf text-accent fs-1 mb-4 d-block"></i>
+            <h2 class="fw-bold mb-3" style="color:var(--text-main);">Özel Günlerinizi Çiçeklerle Kutlayın</h2>
+            <p class="text-muted fw-medium fs-5 mb-4" style="max-width:500px;margin:0 auto 1.5rem;">Doğum günü, yıldönümü, düğün ve daha fazlası için kişiselleştirilmiş aranjmanlar hazırlıyoruz.</p>
+            <div class="d-flex justify-content-center gap-3 flex-wrap">
+                <a asp-action="Products" class="btn btn-accent btn-lg rounded-pill px-5 py-3 fw-bold">
+                    <i class="fa-solid fa-basket-shopping me-2"></i> Hemen Alışveriş Yap
+                </a>
+                <a asp-action="Contact" class="btn btn-outline-accent btn-lg rounded-pill px-5 py-3 fw-bold">
+                    <i class="fa-solid fa-paper-plane me-2"></i> Bizimle İletişime Geç
+                </a>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleWishlistHome(id, btn) {
+        $.post('/Home/ToggleWishlist', { productId: id }, function (res) {
+            if (res.success) {
+                $(btn).toggleClass('active');
+                const icon = $(btn).find('i');
+                if (res.added) {
+                    icon.removeClass('fa-regular').addClass('fa-solid');
+                    Swal.fire({ title: 'Favorilere Eklendi! ❤️', timer: 1500, toast: true, position: 'top-end', showConfirmButton: false, background: '#FFF8F5' });
+                } else {
+                    icon.removeClass('fa-solid').addClass('fa-regular');
+                }
+            } else {
+                Swal.fire('Bilgi', 'Favorilere eklemek için lütfen giriş yapın.', 'info');
+            }
+        });
+    }
+</script>
+}

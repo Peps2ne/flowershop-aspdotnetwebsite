@@ -1,0 +1,65 @@
+@model FlowerShopApp.Models.Wishlist
+@{
+    ViewData["Title"] = "Favorilerim";
+    Layout = "_DashboardLayout"; // Assuming there is a dashboard layout, or default layout fallback is fine
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">❤️ Favorilerim</h2>
+</div>
+
+<div class="card-soft p-4 mb-4">
+    @if (Model == null || !Model.Items.Any())
+    {
+        <div class="text-center py-5">
+            <i class="fa-regular fa-heart fs-1 text-muted mb-3"></i>
+            <h5 class="fw-bold" style="color:#3D2C33;">Favori listeniz henüz boş!</h5>
+            <p class="text-muted">Sevdiğiniz ürünleri kalp ikonuna tıklayarak buraya ekleyebilirsiniz.</p>
+            <a asp-controller="Home" asp-action="Products" class="btn btn-accent rounded-pill px-4 mt-3">Alışverişe Başla</a>
+        </div>
+    }
+    else
+    {
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            @foreach (var item in Model.Items)
+            {
+                <div class="col product-item" id="wishlist-item-@item.ProductId">
+                    <div class="card-soft p-0 overflow-hidden h-100 d-flex flex-column hover-lift border-0 position-relative">
+                        <button class="btn btn-danger position-absolute top-0 end-0 m-2 rounded-circle" style="z-index: 10;" onclick="removeFromWishlist(@item.ProductId)">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
+                        <a asp-controller="Home" asp-action="ProductDetail" asp-route-slug="@item.Product.Slug" asp-route-id="@item.Product.Id" class="text-decoration-none text-dark">
+                            <img src="@item.Product.ImageUrl" alt="@item.Product.Name" class="w-100" style="height: 200px; object-fit: cover;" />
+                            <div class="p-3 bg-white flex-grow-1">
+                                <h6 class="fw-bold mb-1">@item.Product.Name</h6>
+                                <div class="fw-bold text-accent">@item.Product.Price.ToString("0.00") ₺</div>
+                            </div>
+                        </a>
+                        <div class="p-3 bg-white border-top">
+                            <a asp-controller="Dashboard" asp-action="Cart"
+                               asp-route-name="@item.Product.Name"
+                               asp-route-price="@item.Product.Price.ToString("F2", System.Globalization.CultureInfo.InvariantCulture)"
+                               asp-route-img="@item.Product.ImageUrl"
+                               class="btn btn-sm btn-outline-accent w-100 rounded-pill fw-bold">
+                                Sepete Ekle
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</div>
+
+@section Scripts {
+<script>
+    function removeFromWishlist(id) {
+        if (!confirm('Bu ürünü favorilerden çıkarmak istediğinize emin misiniz?')) return;
+        $.post('/Home/ToggleWishlist', { productId: id }, function(res) {
+            if (res.success && !res.added) {
+                $('#wishlist-item-' + id).fadeOut(300, function() { $(this).remove(); });
+            }
+        });
+    }
+</script>
+}

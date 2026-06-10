@@ -1,0 +1,154 @@
+@{
+    ViewData["Title"] = "İndirimlerim";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold mb-0">🎁 Üyelere Özel İndirimler</h2>
+</div>
+
+<!-- Aktif Kodlar -->
+<div class="row g-4 mb-5">
+
+    <!-- BAHAR20 -->
+    <div class="col-md-6">
+        <div class="card-soft h-100 position-relative overflow-hidden" style="border-left: 5px solid #D4728A;">
+            <div class="position-absolute top-0 end-0 m-0">
+                <span class="badge px-3 py-2 rounded-0 rounded-bottom-start fw-bold" style="background:#D4728A; font-size:0.75rem;">AKTİF</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-3 mt-3">
+                <div class="p-3 rounded-3 d-flex align-items-center justify-content-center" style="background:#FADADD; width:56px; height:56px; font-size:1.6rem;">🌸</div>
+                <div>
+                    <h5 class="fw-bold mb-0" style="color:#3D2C33;">Bahar İndirimi</h5>
+                    <small class="fw-bold" style="color:#D4728A;">Tüm ürünlerde geçerli</small>
+                </div>
+            </div>
+            <p class="fw-medium mb-3" style="color:#8E7B82; font-size:0.9rem;">
+                Bahar koleksiyonunun tüm ürünlerinde sepetinize <strong>%20 indirim</strong> kazanın. Sepet ekranında kodu kullanın.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+                <div class="px-4 py-2 rounded-2 fw-bold text-center"
+                    style="background:#FFF8F5; border: 2px dashed #FADADD; color:#3D2C33; font-size:1.1rem; letter-spacing:2px; font-family: monospace;">
+                    BAHAR20
+                </div>
+                <button class="btn btn-sm rounded-pill fw-bold px-3" style="background:#FADADD; color:#D4728A; border:none;"
+                    onclick="copyCode('BAHAR20', this)">
+                    <i class="fa-regular fa-copy me-1"></i>Kopyala
+                </button>
+            </div>
+            <p class="mt-3 mb-0 small fw-bold" style="color:#8E7B82;"><i class="fa-regular fa-clock me-1"></i>Son kullanım: 30 Nisan 2026</p>
+        </div>
+    </div>
+
+    <!-- YENİ ÜYE -->
+    <div class="col-md-6">
+        <div class="card-soft h-100 position-relative overflow-hidden" style="border-left: 5px solid #81B29A;">
+            <div class="position-absolute top-0 end-0 m-0">
+                <span class="badge px-3 py-2 rounded-0 rounded-bottom-start fw-bold" style="background:#81B29A; font-size:0.75rem;">AKTİF</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-3 mt-3">
+                <div class="p-3 rounded-3 d-flex align-items-center justify-content-center" style="background:#DCEEDC; width:56px; height:56px; font-size:1.6rem;">🌱</div>
+                <div>
+                    <h5 class="fw-bold mb-0" style="color:#3D2C33;">Hoş Geldin İndirimi</h5>
+                    <small class="fw-bold" style="color:#5C8C6C;">İlk siparişe özel</small>
+                </div>
+            </div>
+            <p class="fw-medium mb-3" style="color:#8E7B82; font-size:0.9rem;">
+                Bloom ailesine yeni katılan üyelerimize özel <strong>%10 indirim</strong>. Yalnızca ilk siparişinizde geçerlidir.
+            </p>
+            <div class="d-flex align-items-center gap-3">
+                <div class="px-4 py-2 rounded-2 fw-bold text-center"
+                    style="background:#FFF8F5; border: 2px dashed #DCEEDC; color:#3D2C33; font-size:1.1rem; letter-spacing:2px; font-family: monospace;">
+                    HOSGELDIN10
+                </div>
+                <button class="btn btn-sm rounded-pill fw-bold px-3" style="background:#DCEEDC; color:#5C8C6C; border:none;"
+                    onclick="copyCode('HOSGELDIN10', this)">
+                    <i class="fa-regular fa-copy me-1"></i>Kopyala
+                </button>
+            </div>
+            <p class="mt-3 mb-0 small fw-bold" style="color:#8E7B82;"><i class="fa-regular fa-clock me-1"></i>Hesap açıldıktan 30 gün geçerli</p>
+        </div>
+    </div>
+
+    <!-- DOĞUM GÜNÜ -->
+    <div class="col-md-6">
+        <div class="card-soft h-100 position-relative overflow-hidden" style="border-left: 5px solid #FFD6C9;">
+            <div class="position-absolute top-0 end-0 m-0">
+                <span class="badge px-3 py-2 rounded-0 rounded-bottom-start fw-bold" style="background:#C4956A; font-size:0.75rem;">YAKINDA</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-3 mt-3">
+                <div class="p-3 rounded-3 d-flex align-items-center justify-content-center" style="background:#FFD6C9; width:56px; height:56px; font-size:1.6rem;">🎂</div>
+                <div>
+                    <h5 class="fw-bold mb-0" style="color:#3D2C33;">Doğum Günü Sürprizi</h5>
+                    <small class="fw-bold" style="color:#C4956A;">Doğum ayınızda aktifleşir</small>
+                </div>
+            </div>
+            <p class="fw-medium mb-3" style="color:#8E7B82; font-size:0.9rem;">
+                Doğum günü ayınızda sepetinize özel <strong>%15 hediye indirimi</strong> otomatik olarak tanımlanır.
+            </p>
+            <div class="px-3 py-2 rounded-2 fw-bold text-center d-inline-block"
+                style="background:#FFF8F5; border: 2px dashed #FFD6C9; color:#8E7B82; font-size:0.9rem;">
+                🎉 Otomatik Uygulanır
+            </div>
+            <p class="mt-3 mb-0 small fw-bold" style="color:#8E7B82;"><i class="fa-regular fa-calendar me-1"></i>Profilinizde doğum tarihini güncelleyin</p>
+        </div>
+    </div>
+
+    <!-- ÜCRETSİZ KARGO -->
+    <div class="col-md-6">
+        <div class="card-soft h-100 position-relative overflow-hidden" style="border-left: 5px solid #FADADD;">
+            <div class="position-absolute top-0 end-0 m-0">
+                <span class="badge px-3 py-2 rounded-0 rounded-bottom-start fw-bold" style="background:#D4728A; font-size:0.75rem;">AKTİF</span>
+            </div>
+            <div class="d-flex align-items-center gap-3 mb-3 mt-3">
+                <div class="p-3 rounded-3 d-flex align-items-center justify-content-center" style="background:#FADADD; width:56px; height:56px; font-size:1.6rem;">🚚</div>
+                <div>
+                    <h5 class="fw-bold mb-0" style="color:#3D2C33;">Ücretsiz Teslimat</h5>
+                    <small class="fw-bold" style="color:#D4728A;">500 ₺ üzeri siparişlerde</small>
+                </div>
+            </div>
+            <p class="fw-medium mb-3" style="color:#8E7B82; font-size:0.9rem;">
+                500 ₺ ve üzeri tüm siparişlerinizde kargo <strong>tamamen ücretsiz</strong>. Ek bir koda gerek yok!
+            </p>
+            <div class="px-3 py-2 rounded-2 fw-bold text-center d-inline-block"
+                style="background:#FFF8F5; border: 2px dashed #FADADD; color:#D4728A; font-size:0.9rem;">
+                🎀 Otomatik Uygulanır
+            </div>
+            <p class="mt-3 mb-0 small fw-bold" style="color:#8E7B82;"><i class="fa-regular fa-infinity me-1"></i>Süresiz geçerli</p>
+        </div>
+    </div>
+</div>
+
+<!-- Nasıl Kullanılır -->
+<div class="card-soft" style="background: linear-gradient(135deg, #FADADD 0%, #FFD6C9 100%); border: none;">
+    <h5 class="fw-bold mb-3" style="color:#3D2C33;">💡 İndirim Kodu Nasıl Kullanılır?</h5>
+    <div class="row g-3">
+        <div class="col-md-4 text-center">
+            <div class="fw-bold mb-1" style="font-size:1.8rem;">🛒</div>
+            <h6 class="fw-bold">1. Ürünü Seçin</h6>
+            <small class="fw-medium" style="color:#8E7B82;">Ürünlerimiz sayfasından beğendiğiniz buketi sepete ekleyin</small>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="fw-bold mb-1" style="font-size:1.8rem;">📋</div>
+            <h6 class="fw-bold">2. Kodu Yapıştırın</h6>
+            <small class="fw-medium" style="color:#8E7B82;">Sepet sayfasındaki indirim kodu alanına kodu girin</small>
+        </div>
+        <div class="col-md-4 text-center">
+            <div class="fw-bold mb-1" style="font-size:1.8rem;">✨</div>
+            <h6 class="fw-bold">3. İndirimi Kazanın</h6>
+            <small class="fw-medium" style="color:#8E7B82;">"Uygula" butonuna basın, indirim anında yansısın!</small>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    function copyCode(code, btn) {
+        navigator.clipboard.writeText(code).then(function() {
+            btn.innerHTML = '<i class="fa-solid fa-check me-1"></i>Kopyalandı!';
+            setTimeout(() => {
+                btn.innerHTML = '<i class="fa-regular fa-copy me-1"></i>Kopyala';
+            }, 2000);
+        });
+    }
+</script>
+}

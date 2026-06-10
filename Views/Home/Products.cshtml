@@ -1,0 +1,266 @@
+@model IEnumerable<FlowerShopApp.Models.Product>
+@{
+    ViewData["Title"] = "Tüm Çiçeklerimiz";
+}
+
+<div class="inner-container">
+    <div class="catalog-header">
+        <div>
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb mb-2">
+                    <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted">Ana Sayfa</a></li>
+                    <li class="breadcrumb-item active text-accent fw-bold" aria-current="page">Çiçeklerimiz</li>
+                </ol>
+            </nav>
+            <h1 class="fw-bold fs-1" style="color: #3D2C33;">Taze Çiçek Koleksiyonu</h1>
+            <p class="text-muted fw-medium mb-0">En taze çiçeklerimizi sizin için kategorize ettik.</p>
+        </div>
+        <div class="d-flex gap-3 align-items-center">
+            <span class="text-muted small fw-bold d-none d-md-inline">Sıralama:</span>
+            <select class="sort-dropdown shadow-sm" id="sortSelect">
+                <option value="default">Önerilen</option>
+                <option value="price-asc">Fiyat: Düşükten Yükseğe</option>
+                <option value="price-desc">Fiyat: Yüksekten Düşüğe</option>
+                <option value="name-asc">İsim: A-Z</option>
+            </select>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        <!-- SIDEBAR FILTERS -->
+        <div class="col-lg-3">
+            <div class="filter-card">
+                <!-- Search -->
+                <div class="filter-section">
+                    <div class="filter-title">ARAMA</div>
+                    <div class="search-bar w-100 mb-0" style="width: 100% !important;">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" id="catalogSearch" placeholder="Çiçek ara...">
+                    </div>
+                </div>
+
+                <!-- Categories -->
+                <div class="filter-section">
+                    <div class="filter-title">KATEGORİLER</div>
+                    <ul class="filter-list" id="categoryFilters">
+                        <li>
+                            <label><input type="checkbox" value="all" checked class="category-toggle"> Tüm Çiçekler</label>
+                        </li>
+                        @foreach (var cat in Model.Select(p => p.Category?.Name).Distinct().Where(n => !string.IsNullOrEmpty(n)))
+                        {
+                            <li>
+                                <label><input type="checkbox" value="@cat" class="category-toggle"> @cat</label>
+                            </li>
+                        }
+                    </ul>
+                </div>
+
+                <!-- Price Range -->
+                <div class="filter-section">
+                    <div class="filter-title">FİYAT ARALIĞI</div>
+                    <div class="d-flex align-items-center gap-2 mb-3">
+                        <input type="number" id="minPrice" class="form-control form-control-sm rounded-3" placeholder="Min" min="0">
+                        <span class="text-muted">-</span>
+                        <input type="number" id="maxPrice" class="form-control form-control-sm rounded-3" placeholder="Max" min="0">
+                    </div>
+                    <button class="btn btn-outline-accent btn-sm w-100 rounded-pill fw-bold" onclick="applyPriceFilter()">Uygula</button>
+                </div>
+
+                <!-- Fast Delivery / Stock -->
+                <div class="filter-section">
+                    <ul class="filter-list">
+                        <li>
+                            <label><input type="checkbox" id="stockToggle"> Sadece Stokta Olanlar</label>
+                        </li>
+                    </ul>
+                </div>
+
+                <button class="btn btn-link text-muted small fw-bold w-100 text-decoration-none mt-2" onclick="resetAllFilters()">Filtreleri Temizle</button>
+            </div>
+        </div>
+
+        <!-- PRODUCT LIST -->
+        <div class="col-lg-9">
+            <div class="product-grid" id="catalogGrid">
+                @foreach (var item in Model)
+                {
+                    <div class="product-card-wrapper" 
+                         data-name="@item.Name" 
+                         data-category="@(item.Category?.Name ?? "Diğer")" 
+                         data-price="@item.Price" 
+                         data-stock="@item.Stock">
+                        <div class="flower-card">
+                            <div class="flower-card-img">
+                                <a asp-action="ProductDetail" asp-route-slug="@item.Slug" asp-route-id="@item.Id">
+                                    <img src="@(string.IsNullOrEmpty(item.ImageUrl) ? "https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=800&q=80" : item.ImageUrl)" 
+                                         alt="@item.Name" 
+                                         onerror="this.src='https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=800&q=80'" />
+                                </a>
+                                @if (!string.IsNullOrEmpty(item.Badge))
+                                {
+                                    <span class="position-absolute top-0 end-0 m-3 badge bg-@item.BadgeColor rounded-pill px-3 py-2 shadow-sm">@item.Badge</span>
+                                }
+                            </div>
+                            <div class="flower-card-body">
+                                <div class="flower-card-category">@(item.Category?.Name ?? "Çiçek")</div>
+                                <a asp-action="ProductDetail" asp-route-slug="@item.Slug" asp-route-id="@item.Id" class="text-decoration-none">
+                                    <h3 class="flower-card-title">@item.Name</h3>
+                                </a>
+                                <p class="flower-card-desc">@item.Description</p>
+                                
+                                <div class="flower-card-price-row">
+                                    <div class="flower-card-price">
+                                        @((new System.Globalization.CultureInfo("tr-TR")).NumberFormat.CurrencySymbol)@item.Price.ToString("N2", new System.Globalization.CultureInfo("tr-TR")).Replace(new System.Globalization.CultureInfo("tr-TR").NumberFormat.CurrencySymbol, "")
+                                        <span>/ Buket</span>
+                                    </div>
+                                    <div class="small fw-bold @(item.Stock > 0 ? "text-success" : "text-danger")">
+                                        @(item.Stock > 0 ? "Stokta Var" : "Tükendi")
+                                    </div>
+                                </div>
+
+                                <div class="flower-card-actions">
+                                    <button class="btn-cart-add" onclick="BloomCart.addItem({ id: @item.Id, name: '@Html.Raw(item.Name.Replace("'","\\'"  ))', price: @item.Price.ToString(System.Globalization.CultureInfo.InvariantCulture), img: '@item.ImageUrl' })">
+                                        <i class="fa-solid fa-basket-shopping"></i> Sepete Ekle
+                                    </button>
+                                    <button class="btn-wishlist" onclick="toggleWishlistCatalog(@item.Id, this)">
+                                        <i class="fa-regular fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <!-- Empty State -->
+            <div id="catalogEmpty" class="text-center py-5 d-none">
+                <div class="mb-4">
+                    <div class="d-inline-flex p-5 rounded-circle bg-white shadow-sm border">
+                        <i class="fa-solid fa-wind fs-1 text-muted opacity-50"></i>
+                    </div>
+                </div>
+                <h3 class="fw-bold text-main">Aradığınız kriterlere uygun çiçek bulunamadı.</h3>
+                <p class="text-muted fw-medium mb-4">Lütfen filtrelerinizi kontrol edin veya farklı bir arama yapın.</p>
+                <button onclick="resetAllFilters()" class="btn btn-accent rounded-pill px-5 py-3 fw-bold">Tüm Çiçekleri Gör</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $(document).ready(function() {
+            // Filter Handlers
+            $('#catalogSearch').on('input', applyAllFilters);
+            $('.category-toggle').on('change', function() {
+                if ($(this).val() === 'all' && $(this).is(':checked')) {
+                    $('.category-toggle').not('[value="all"]').prop('checked', false);
+                } else if ($(this).is(':checked')) {
+                    $('.category-toggle[value="all"]').prop('checked', false);
+                }
+                applyAllFilters();
+            });
+            $('#stockToggle').on('change', applyAllFilters);
+            $('#sortSelect').on('change', sortProducts);
+
+            // Initial Filter
+            applyAllFilters();
+        });
+
+        function applyAllFilters() {
+            const search = $('#catalogSearch').val().toLowerCase().trim();
+            const selectedCats = $('.category-toggle:checked').map(function() { return $(this).val(); }).get();
+            const minP = parseFloat($('#minPrice').val()) || 0;
+            const maxP = parseFloat($('#maxPrice').val()) || Infinity;
+            const onlyInStock = $('#stockToggle').is(':checked');
+
+            let visibleCount = 0;
+
+            $('.product-card-wrapper').each(function() {
+                const name = $(this).data('name').toLowerCase();
+                const cat = $(this).data('category');
+                const price = parseFloat($(this).data('price'));
+                const stock = parseInt($(this).data('stock'));
+
+                const searchMatch = !search || name.includes(search);
+                const catMatch = selectedCats.includes('all') || selectedCats.includes(cat);
+                const priceMatch = price >= minP && price <= maxP;
+                const stockMatch = !onlyInStock || stock > 0;
+
+                if (searchMatch && catMatch && priceMatch && stockMatch) {
+                    $(this).show();
+                    visibleCount++;
+                } else {
+                    $(this).hide();
+                }
+            });
+
+            if (visibleCount === 0) {
+                $('#catalogGrid').addClass('d-none');
+                $('#catalogEmpty').removeClass('d-none');
+            } else {
+                $('#catalogGrid').removeClass('d-none');
+                $('#catalogEmpty').addClass('d-none');
+            }
+        }
+
+        function sortProducts() {
+            const criteria = $('#sortSelect').val();
+            const grid = $('#catalogGrid');
+            const items = grid.children('.product-card-wrapper').get();
+
+            items.sort(function(a, b) {
+                const valA = criteria.includes('price') ? parseFloat($(a).data('price')) : $(a).data('name').toLowerCase();
+                const valB = criteria.includes('price') ? parseFloat($(b).data('price')) : $(b).data('name').toLowerCase();
+
+                if (criteria === 'price-asc') return valA - valB;
+                if (criteria === 'price-desc') return valB - valA;
+                if (criteria === 'name-asc') return valA.localeCompare(valB);
+                return 0; 
+            });
+
+            $.each(items, function(i, el) {
+                grid.append(el);
+            });
+        }
+
+        function applyPriceFilter() {
+            applyAllFilters();
+        }
+
+        function resetAllFilters() {
+            $('#catalogSearch').val('');
+            $('.category-toggle').prop('checked', false);
+            $('.category-toggle[value="all"]').prop('checked', true);
+            $('#minPrice').val('');
+            $('#maxPrice').val('');
+            $('#stockToggle').prop('checked', false);
+            applyAllFilters();
+        }
+
+        function toggleWishlistCatalog(id, btn) {
+            $.post('/Home/ToggleWishlist', { productId: id }, function(res) {
+                if (res.success) {
+                    $(btn).toggleClass('active');
+                    const icon = $(btn).find('i');
+                    if (res.added) {
+                        icon.removeClass('fa-regular').addClass('fa-solid');
+                        Swal.fire({
+                            title: 'Favorilere Eklendi! ❤️',
+                            timer: 1500,
+                            toast: true,
+                            position: 'top-end',
+                            showConfirmButton: false,
+                            background: '#FFF8F5'
+                        });
+                    } else {
+                        icon.removeClass('fa-solid').addClass('fa-regular');
+                    }
+                } else {
+                    Swal.fire('Hata', 'Lütfen giriş yapın.', 'info');
+                }
+            });
+        }
+    </script>
+}

@@ -1,0 +1,1 @@
+cmdyi acip "dotnet run" yazmaniz projeyi calistirmak icin yeterlidir daha sonrasinda tarayicidan verilen adrese gidin

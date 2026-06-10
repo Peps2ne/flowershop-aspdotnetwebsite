@@ -1,0 +1,40 @@
+## ASP.NET Core / .NET gitignore
+
+# Build results
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+.vs/
+*.rsuser
+
+# Publish
+publish/
+**/Properties/PublishProfiles/
+
+# NuGet
+*.nupkg
+*.snupkg
+**/packages/
+!**/packages/build/
+*.nuget.props
+*.nuget.targets
+
+# Database
+*.mdf
+*.ldf
+
+# Logs
+logs/
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Secrets / Connection strings (güvenlik için)
+appsettings.Development.json

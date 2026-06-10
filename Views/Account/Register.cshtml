@@ -1,0 +1,45 @@
+@model FlowerShopApp.ViewModels.RegisterViewModel
+@{
+    ViewData["Title"] = "Kayıt Ol";
+}
+
+<div class="auth-wrapper">
+    <div class="auth-card">
+        <span class="brand-badge">🌸 Bloom & Co.</span>
+        <h2>Ailemize Katılın</h2>
+        <p>Taze çiçek dünyasını keşfetmek için ücretsiz hesap oluşturun.</p>
+        
+        <form asp-action="Register" method="post">
+            <div asp-validation-summary="ModelOnly" class="alert rounded-3 py-2 px-3 text-danger border-0 small fw-bold" style="background:#FADADD;"></div>
+            
+            <div class="form-group">
+                <label asp-for="Username">Kullanıcı Adı</label>
+                <input asp-for="Username" class="form-control" placeholder="Bir kullanıcı adı belirleyin" />
+                <span asp-validation-for="Username" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Email">E-posta</label>
+                <input asp-for="Email" class="form-control" placeholder="E-posta adresiniz" />
+                <span asp-validation-for="Email" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Password">Şifre</label>
+                <input asp-for="Password" class="form-control" placeholder="Bir şifre oluşturun" />
+                <span asp-validation-for="Password" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="ConfirmPassword">Şifre Onayı</label>
+                <input asp-for="ConfirmPassword" class="form-control" placeholder="Şifrenizi tekrar girin" />
+                <span asp-validation-for="ConfirmPassword" class="text-danger small fw-bold"></span>
+            </div>
+            
+            <button type="submit" class="btn btn-accent btn-block shadow-sm">Üye Ol</button>
+            <div class="auth-links mt-4">
+                <p>Zaten üye misiniz? <a asp-action="Login">Giriş yapın</a></p>
+            </div>
+        </form>
+    </div>
+</div>

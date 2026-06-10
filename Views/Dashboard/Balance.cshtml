@@ -1,0 +1,113 @@
+@{
+    ViewData["Title"] = "Bakiyem";
+    decimal balance = ViewBag.Balance ?? 0;
+}
+
+<div class="container py-5" style="max-width: 700px;">
+    <!-- Balance Card -->
+    <div class="rounded-4 p-5 text-white text-center mb-5 position-relative overflow-hidden shadow-lg"
+         style="background: linear-gradient(135deg, #D4728A, #3D2C33);">
+        <div class="position-absolute top-0 start-0 w-100 h-100" style="background: url('data:image/svg+xml,%3Csvg width=\'20\' height=\'20\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Ccircle cx=\'10\' cy=\'10\' r=\'4\' fill=\'white\' opacity=\'0.04\'/%3E%3C/svg%3E'); opacity:0.5;"></div>
+        <p class="mb-2 small text-uppercase letter-spacing-2 opacity-75 fw-bold">Mevcut Bakiyeniz</p>
+        <h1 class="display-4 fw-bold mb-0">@balance.ToString("0.00") ₺</h1>
+        <p class="mt-2 opacity-60 small">Alışverişlerinizde kullanabilirsiniz.</p>
+    </div>
+
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert rounded-4 border-0 shadow-sm mb-4 fw-bold" style="background: #DCEEDC; color: #3D6C4C;">
+            <i class="fa-solid fa-circle-check me-2"></i> @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger rounded-4 border-0 shadow-sm mb-4">
+            <i class="fa-solid fa-circle-exclamation me-2"></i> @TempData["Error"]
+        </div>
+    }
+
+    <!-- Top-up Form -->
+    <div class="card-soft bg-white border-0 p-5">
+        <h5 class="fw-bold mb-4" style="color: #3D2C33;">Bakiye Yükle</h5>
+        <form asp-action="AddBalance" method="post" id="balanceForm">
+            <div class="mb-4">
+                <label class="fw-bold small text-uppercase text-muted mb-2">Yüklenecek Tutar (₺)</label>
+                <input type="number" name="amount" min="1" step="0.01"
+                       class="form-control rounded-pill p-3 fw-bold fs-5 border-0 shadow-sm"
+                       style="background-color: #f8f9fa;"
+                       placeholder="100.00" required />
+            </div>
+            
+            <div class="row g-3 mb-4">
+                <div class="col-12">
+                    <label class="fw-bold small text-uppercase text-muted mb-2">Kart Numarası</label>
+                    <input type="text" id="cardNumber" class="form-control rounded-pill p-3 border-0 shadow-sm" 
+                           style="background-color: #f8f9fa;" placeholder="0000 0000 0000 0000" maxlength="19" required />
+                </div>
+                <div class="col-6">
+                    <label class="fw-bold small text-uppercase text-muted mb-2">SKT (AA/YY)</label>
+                    <input type="text" id="expiry" class="form-control rounded-pill p-3 border-0 shadow-sm" 
+                           style="background-color: #f8f9fa;" placeholder="MM/YY" maxlength="5" required />
+                </div>
+                <div class="col-6">
+                    <label class="fw-bold small text-uppercase text-muted mb-2">CVV</label>
+                    <input type="text" id="cvv" class="form-control rounded-pill p-3 border-0 shadow-sm" 
+                           style="background-color: #f8f9fa;" placeholder="***" maxlength="3" required />
+                </div>
+            </div>
+
+            <div class="d-flex gap-2 flex-wrap mb-4">
+                <button type="button" onclick="setAmount(50)" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">50 ₺</button>
+                <button type="button" onclick="setAmount(100)" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">100 ₺</button>
+                <button type="button" onclick="setAmount(250)" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">250 ₺</button>
+                <button type="button" onclick="setAmount(500)" class="btn btn-outline-secondary rounded-pill px-4 fw-bold">500 ₺</button>
+            </div>
+            <button type="submit" class="btn btn-accent rounded-pill w-100 py-3 fw-bold shadow-sm fs-5">
+                <i class="fa-solid fa-plus me-2"></i> Bakiye Yükle
+            </button>
+        </form>
+        <p class="text-muted small text-center mt-3">
+            <i class="fa-solid fa-lock text-success me-1"></i>
+            Ödemeniz 256-bit SSL ile korunmaktadır.
+        </p>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        function setAmount(val) {
+            document.querySelector('input[name="amount"]').value = val;
+        }
+
+        // Card number masking
+        var cn = document.getElementById('cardNumber');
+        if (cn) {
+            cn.addEventListener('input', function(e) {
+                var v = e.target.value.replace(/\D/g,'');
+                var f = '';
+                for (var i = 0; i < v.length; i++) { if (i > 0 && i % 4 === 0) f += ' '; f += v[i]; }
+                e.target.value = f;
+            });
+        }
+
+        // Expiry masking
+        var exp = document.getElementById('expiry');
+        if (exp) {
+            exp.addEventListener('input', function(e) {
+                var v = e.target.value.replace(/\D/g,'');
+                if (v.length > 2) e.target.value = v.substring(0,2) + '/' + v.substring(2,4);
+            });
+        }
+
+        // Form validation
+        document.getElementById('balanceForm').addEventListener('submit', function(e) {
+            var cnVal = cn.value.replace(/\s/g,'');
+            var expVal = exp.value;
+            var cvvVal = document.getElementById('cvv').value;
+
+            if (cnVal.length < 16) { alert('Lütfen geçerli bir kart numarası girin.'); e.preventDefault(); return; }
+            if (expVal.length < 5) { alert('Lütfen geçerli bir son kullanma tarihi girin.'); e.preventDefault(); return; }
+            if (cvvVal.length < 3) { alert('Lütfen geçerli bir CVV girin.'); e.preventDefault(); return; }
+        });
+    </script>
+}

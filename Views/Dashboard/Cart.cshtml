@@ -1,0 +1,339 @@
+@{
+    ViewData["Title"] = "Sepetiniz - Bloom & Co.";
+}
+
+<div class="inner-container">
+    <div class="d-flex justify-content-between align-items-center mb-5 reveal-on-scroll">
+        <h1 class="section-title text-start mb-0">Sepetiniz</h1>
+        <button class="btn btn-outline-accent rounded-pill px-4" onclick="clearCart()">
+            <i class="fa-solid fa-trash-can me-2"></i>Sepeti Temizle
+        </button>
+    </div>
+
+    <div class="row g-5">
+        <div class="col-lg-8 reveal-on-scroll">
+            <div class="glass-panel p-4 overflow-hidden" id="cartContent">
+                <div class="table-responsive">
+                    <table class="table align-middle" id="cartTable">
+                        <thead>
+                            <tr class="text-muted-soft small fw-bold text-uppercase" style="letter-spacing: 1px;">
+                                <th class="border-0 pb-4">Ürün Detayı</th>
+                                <th class="border-0 pb-4">Birim</th>
+                                <th class="border-0 pb-4" style="width: 140px;">Adet</th>
+                                <th class="border-0 pb-4">Toplam</th>
+                                <th class="border-0 pb-4"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="cartTableBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="mt-4 p-4 glass-panel bg-rose d-flex align-items-center gap-3">
+                <i class="fa-solid fa-truck-fast text-accent fs-4"></i>
+                <div>
+                    <strong class="text-main d-block">Tebrikler! Ücretsiz Teslimat Kazandınız</strong>
+                    <small class="text-muted fw-bold">Bloom &amp; Co. ile tüm sepetlerde kargo bizden.</small>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4 reveal-on-scroll">
+            <div class="glass-panel p-4 mb-4" style="position: sticky; top: 100px;">
+                <h5 class="fw-bold text-main mb-4">Sipariş Özeti</h5>
+
+                <div class="d-flex justify-content-between mb-3 fw-bold text-muted">
+                    <span>Ara Toplam</span>
+                    <span id="subTotal">0,00 ₺</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-3 text-danger fw-bold d-none" id="discountRow">
+                    <span id="discountLabel">İndirim (%0)</span>
+                    <span id="discountAmt">-0,00 ₺</span>
+                </div>
+
+                <div class="d-flex justify-content-between mb-4 pt-3 border-top">
+                    <span class="fs-5 fw-bold text-main">Genel Toplam</span>
+                    <span class="fs-4 fw-bold text-accent" id="grandTotal">0,00 ₺</span>
+                </div>
+
+                <div class="mb-4">
+                    <label class="small fw-bold text-muted mb-2 text-uppercase">İndirim Kodu</label>
+                    <div class="input-group glass-panel p-1 bg-white" style="border-radius: 50px;">
+                        <input type="text" id="discountCode" class="form-control border-0 bg-transparent ps-3 fw-bold" placeholder="KUPON">
+                        <button class="btn btn-accent rounded-pill px-4" id="applyDiscountBtn">Uygula</button>
+                    </div>
+                    <div id="discountMsg" class="mt-2 small fw-bold d-none"></div>
+                </div>
+
+                <button onclick="goToCheckout()" class="btn btn-accent w-100 rounded-pill py-3 fs-5 fw-bold shadow-soft">
+                    <i class="fa-solid fa-lock me-2"></i> Güvenli Ödeme'ye Geç
+                </button>
+
+                <div class="text-center mt-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/2a/Mastercard-logo.svg/1000px-Mastercard-logo.svg.png" height="24" class="me-3 grayscale opacity-50" alt="Mastercard" />
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2000px-Visa_Inc._logo.svg.png" height="15" class="grayscale opacity-50" alt="Visa" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // ─── CART STORAGE ─────────────────────────────────────────────────
+    const CART_KEY = 'bloom_cart_items';
+
+    function getCart() {
+        try {
+            var raw = localStorage.getItem(CART_KEY);
+            if (!raw) return [];
+            var parsed = JSON.parse(raw);
+            return Array.isArray(parsed) ? parsed : [];
+        } catch (e) {
+            console.warn('[Cart] getCart error:', e);
+            return [];
+        }
+    }
+
+    function saveCart(cart) {
+        try {
+            localStorage.setItem(CART_KEY, JSON.stringify(cart));
+            window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { items: cart } }));
+        } catch (e) {
+            console.error('[Cart] saveCart error:', e);
+        }
+    }
+
+    function clearCart() {
+        if (confirm('Sepetinizi temizlemek istediğinize emin misiniz?')) {
+            localStorage.removeItem(CART_KEY);
+            window.dispatchEvent(new CustomEvent('cartUpdated', { detail: { items: [] } }));
+            renderCart();
+        }
+    }
+
+    function removeCartItem(itemId) {
+        var cart = getCart().filter(function (item) {
+            return String(item.id) !== String(itemId);
+        });
+        saveCart(cart);
+        renderCart();
+    }
+
+    function updateCartQty(itemId, val) {
+        var qty = parseInt(val);
+        if (isNaN(qty) || qty < 1) {
+            removeCartItem(itemId);
+            return;
+        }
+        var cart = getCart();
+        var idx = cart.findIndex(function (item) { return String(item.id) === String(itemId); });
+        if (idx > -1) {
+            cart[idx].qty = qty;
+            saveCart(cart);
+            renderCart();
+        }
+    }
+
+    function fmtPrice(n) {
+        try {
+            return new Intl.NumberFormat('tr-TR', { style: 'currency', currency: 'TRY' }).format(Number(n) || 0);
+        } catch (e) {
+            return (Number(n) || 0).toFixed(2) + ' ₺';
+        }
+    }
+
+    var discountApplied = false;
+    var discountRate = 0;
+
+    function renderCart() {
+        var cart = getCart();
+        console.log('[Cart] renderCart called. Items:', cart.length, cart);
+
+        var cartContent = document.getElementById('cartContent');
+        if (!cartContent) {
+            console.error('[Cart] #cartContent not found');
+            return;
+        }
+
+        if (cart.length === 0) {
+            cartContent.innerHTML = '<div class="text-center py-5">' +
+                '<i class="fa-solid fa-basket-shopping text-peach display-1 mb-4"></i>' +
+                '<h3 class="fw-bold text-main">Sepetiniz Boş</h3>' +
+                '<p class="text-muted mb-4">Hala taze çiçeklerimizi keşfetmediniz mi?</p>' +
+                '<a href="/Home/Products" class="btn btn-accent rounded-pill px-5">Alışverişe Başla</a>' +
+                '</div>';
+            var subT = document.getElementById('subTotal');
+            var grandT = document.getElementById('grandTotal');
+            if (subT) subT.textContent = fmtPrice(0);
+            if (grandT) grandT.textContent = fmtPrice(0);
+            return;
+        }
+
+        // Ensure table structure is present
+        if (!document.getElementById('cartTable')) {
+            cartContent.innerHTML = '<div class="table-responsive">' +
+                '<table class="table align-middle" id="cartTable">' +
+                '<thead><tr class="text-muted-soft small fw-bold text-uppercase" style="letter-spacing:1px;">' +
+                '<th class="border-0 pb-4">Ürün Detayı</th>' +
+                '<th class="border-0 pb-4">Birim</th>' +
+                '<th class="border-0 pb-4" style="width:140px;">Adet</th>' +
+                '<th class="border-0 pb-4">Toplam</th>' +
+                '<th class="border-0 pb-4"></th>' +
+                '</tr></thead>' +
+                '<tbody id="cartTableBody"></tbody>' +
+                '</table></div>';
+        }
+
+        var tbody = document.getElementById('cartTableBody');
+        if (!tbody) {
+            console.error('[Cart] #cartTableBody not found after rebuild');
+            return;
+        }
+
+        var sub = 0;
+        var html = '';
+
+        cart.forEach(function (item) {
+            var price = parseFloat(item.price) || 0;
+            var qty = parseInt(item.qty) || 1;
+            var rowTotal = price * qty;
+            sub += rowTotal;
+            var imgSrc = item.img || 'https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=200';
+            var itemId = String(item.id || ('_' + item.name));
+            var safeId = JSON.stringify(itemId);
+            var safeName = (item.name || 'Ürün').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+            html += '<tr>' +
+                '<td>' +
+                  '<div class="d-flex align-items-center gap-4">' +
+                    '<div class="rounded-4 overflow-hidden shadow-sm flex-shrink-0" style="width:80px;height:80px;">' +
+                      '<img src="' + imgSrc + '" class="w-100 h-100" style="object-fit:cover;" ' +
+                           'onerror="this.src=\'https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=200\'">' +
+                    '</div>' +
+                    '<div>' +
+                      '<div class="fw-bold text-main fs-5">' + safeName + '</div>' +
+                      '<small class="text-accent fw-bold"><i class="fa-solid fa-certificate me-1"></i>Taze Bloom Kalitesi</small>' +
+                    '</div>' +
+                  '</div>' +
+                '</td>' +
+                '<td class="fw-bold text-main">' + fmtPrice(price) + '</td>' +
+                '<td>' +
+                  '<div class="input-group glass-panel p-1 bg-white" style="border-radius:50px;">' +
+                    '<button class="btn btn-sm px-2 py-1" onclick="updateCartQty(' + safeId + ', ' + (qty - 1) + ')">−</button>' +
+                    '<input type="number" value="' + qty + '" min="1" class="form-control text-center border-0 bg-transparent fw-bold" style="width:50px;" onchange="updateCartQty(' + safeId + ', this.value)">' +
+                    '<button class="btn btn-sm px-2 py-1" onclick="updateCartQty(' + safeId + ', ' + (qty + 1) + ')">+</button>' +
+                  '</div>' +
+                '</td>' +
+                '<td class="fw-bold text-accent fs-5">' + fmtPrice(rowTotal) + '</td>' +
+                '<td>' +
+                  '<button class="btn btn-link text-danger" onclick="removeCartItem(' + safeId + ')">' +
+                    '<i class="fa-solid fa-trash-can"></i>' +
+                  '</button>' +
+                '</td>' +
+                '</tr>';
+        });
+
+        tbody.innerHTML = html;
+
+        var disc = discountApplied ? sub * discountRate : 0;
+        var grand = sub - disc;
+
+        var subT = document.getElementById('subTotal');
+        var grandT = document.getElementById('grandTotal');
+        var discRow = document.getElementById('discountRow');
+        var discLabel = document.getElementById('discountLabel');
+        var discAmt = document.getElementById('discountAmt');
+
+        if (subT) subT.textContent = fmtPrice(sub);
+        if (grandT) grandT.textContent = fmtPrice(grand);
+        if (discRow) {
+            if (discountApplied) {
+                discRow.classList.remove('d-none');
+                if (discLabel) discLabel.textContent = 'İndirim (%' + Math.round(discountRate * 100) + ')';
+                if (discAmt) discAmt.textContent = '-' + fmtPrice(disc);
+            } else {
+                discRow.classList.add('d-none');
+            }
+        }
+    }
+
+    // ─── DISCOUNT CODE ────────────────────────────────────────────────
+    var applyBtn = document.getElementById('applyDiscountBtn');
+    if (applyBtn) {
+        applyBtn.addEventListener('click', function () {
+            var code = document.getElementById('discountCode').value.trim().toUpperCase();
+            var msg = document.getElementById('discountMsg');
+            if (msg) { msg.classList.remove('d-none', 'text-success', 'text-danger'); }
+
+            fetch('/AdminDiscounts/Validate?code=' + encodeURIComponent(code))
+                .then(function (res) { return res.json(); })
+                .then(function (data) {
+                    if (data.valid) {
+                        discountRate = data.percentage / 100;
+                        discountApplied = true;
+                        if (msg) {
+                            msg.classList.remove('d-none');
+                            msg.classList.add('text-success');
+                            msg.textContent = '✓ %' + data.percentage + ' İndirim Uygulandı!';
+                        }
+                        applyBtn.classList.replace('btn-accent', 'btn-success');
+                        applyBtn.innerHTML = '<i class="fa-solid fa-check"></i>';
+                    } else {
+                        discountApplied = false;
+                        discountRate = 0;
+                        if (msg) {
+                            msg.classList.remove('d-none');
+                            msg.classList.add('text-danger');
+                            msg.textContent = '✗ Geçersiz Kod';
+                        }
+                    }
+                    renderCart();
+                })
+                .catch(function () {
+                    if (msg) msg.textContent = 'Hata oluştu.';
+                });
+        });
+    }
+
+    // ─── CHECKOUT ─────────────────────────────────────────────────────
+    function goToCheckout() {
+        var cart = getCart();
+        if (cart.length === 0) {
+            Swal.fire('Sepet Boş', 'Lütfen sepetinize ürün ekleyin.', 'warning');
+            return;
+        }
+
+        var rawTotal = cart.reduce(function (s, i) {
+            return s + (parseFloat(i.price) || 0) * (parseInt(i.qty) || 1);
+        }, 0);
+        var total = discountApplied ? rawTotal * (1 - discountRate) : rawTotal;
+
+        var form = document.createElement('form');
+        form.method = 'get';
+        form.action = '/Dashboard/Checkout';
+
+        var fCart = document.createElement('input');
+        fCart.type = 'hidden';
+        fCart.name = 'cartJson';
+        fCart.value = JSON.stringify(cart);
+        form.appendChild(fCart);
+
+        var fTotal = document.createElement('input');
+        fTotal.type = 'hidden';
+        fTotal.name = 'total';
+        fTotal.value = total.toFixed(2);
+        form.appendChild(fTotal);
+
+        document.body.appendChild(form);
+        form.submit();
+    }
+
+    // ─── INITIAL RENDER ───────────────────────────────────────────────
+    // Run immediately since scripts load at end of body
+    renderCart();
+</script>
+}

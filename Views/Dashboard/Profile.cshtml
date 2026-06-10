@@ -1,0 +1,146 @@
+@{
+    ViewData["Title"] = "Profilim";
+}
+
+<h2 class="fw-bold mb-4">👤 Profilim</h2>
+
+<div class="row g-4">
+    <!-- Sol: Avatar & Özet -->
+    <div class="col-md-4">
+        <div class="card-soft text-center">
+            <div class="mb-3 position-relative d-inline-block">
+                <img id="avatarPreview"
+                    src="https://ui-avatars.com/api/?name=@User.Identity!.Name&background=FADADD&color=D4728A&size=120"
+                    class="rounded-circle border shadow-sm"
+                    style="width: 120px; height: 120px; object-fit: cover; border: 4px solid #FFD6C9 !important;"
+                    alt="Avatar">
+                <label for="avatarInput" class="position-absolute bottom-0 end-0 btn btn-accent btn-sm rounded-circle shadow-sm"
+                    style="width:36px; height:36px; display:flex; align-items:center; justify-content:center; cursor:pointer;">
+                    <i class="fa-solid fa-camera" style="font-size:0.8rem;"></i>
+                </label>
+                <input type="file" id="avatarInput" class="d-none" accept="image/*">
+            </div>
+            <h4 class="fw-bold mt-3 mb-0" style="color:#3D2C33;">@User.Identity!.Name</h4>
+            <p class="fw-medium mt-1" style="color:#D4728A; font-size:0.9rem;">🌸 Bloom Üyesi</p>
+            <hr style="border-color: #F5E8EA;">
+            <div class="text-start small fw-bold" style="color:#8E7B82;">
+                <div class="d-flex justify-content-between align-items-center mb-3 p-3 rounded-3" style="background:#FFF8F5;">
+                    <span><i class="fa-solid fa-basket-shopping me-2 text-accent"></i>Toplam Sipariş</span>
+                    <span class="badge rounded-pill" style="background:#FFD6C9; color:#D4728A;">1</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-center p-3 rounded-3" style="background:#FFF8F5;">
+                    <span><i class="fa-solid fa-tag me-2 text-accent"></i>Kullanılan İndirim</span>
+                    <span class="badge rounded-pill" style="background:#DCEEDC; color:#5C8C6C;">0</span>
+                </div>
+            </div>
+            <a asp-controller="Account" asp-action="Logout" class="btn btn-sm w-100 rounded-pill mt-4 fw-bold"
+                style="border: 2px solid #FADADD; color: #D4728A;">
+                <i class="fa-solid fa-arrow-right-from-bracket me-1"></i> Çıkış Yap
+            </a>
+        </div>
+    </div>
+    
+    <!-- Sağ: Düzenleme Formu -->
+    <div class="col-md-8">
+        <!-- Kişisel Bilgiler -->
+        <div class="card-soft mb-4">
+            <h5 class="fw-bold mb-4" style="color:#3D2C33;">✏️ Kişisel Bilgiler</h5>
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Kullanıcı Adı</label>
+                        <input type="text" class="form-control rounded-3 fw-bold" value="@User.Identity!.Name"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">E-posta</label>
+                        <input type="email" class="form-control rounded-3 fw-bold" placeholder="ornek@mail.com"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Ad</label>
+                        <input type="text" class="form-control rounded-3 fw-bold" placeholder="Adınız"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Soyad</label>
+                        <input type="text" class="form-control rounded-3 fw-bold" placeholder="Soyadınız"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Telefon</label>
+                        <input type="tel" class="form-control rounded-3 fw-bold" placeholder="+90 (5__) ___ __ __"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-accent rounded-pill px-5 py-2 mt-4 fw-bold shadow-sm">Bilgileri Güncelle</button>
+            </form>
+        </div>
+
+        <!-- Adres -->
+        <div class="card-soft mb-4">
+            <h5 class="fw-bold mb-4" style="color:#3D2C33;">📦 Teslimat Adresi</h5>
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Adres</label>
+                        <textarea class="form-control rounded-3 fw-bold" rows="2" placeholder="Mahalle, cadde, kapı no..."
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif; resize:none;"></textarea>
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">İlçe</label>
+                        <input type="text" class="form-control rounded-3 fw-bold" placeholder="İlçe"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Şehir</label>
+                        <input type="text" class="form-control rounded-3 fw-bold" placeholder="İstanbul"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-accent rounded-pill px-5 py-2 mt-4 fw-bold shadow-sm">Adresi Kaydet</button>
+            </form>
+        </div>
+
+        <!-- Şifre Değiştir -->
+        <div class="card-soft">
+            <h5 class="fw-bold mb-4" style="color:#3D2C33;">🔒 Şifre Değiştir</h5>
+            <form>
+                <div class="row g-3">
+                    <div class="col-md-12">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Mevcut Şifre</label>
+                        <input type="password" class="form-control rounded-3 fw-bold"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Yeni Şifre</label>
+                        <input type="password" class="form-control rounded-3 fw-bold"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                    <div class="col-md-6">
+                        <label class="form-label fw-bold small" style="color:#8E7B82; text-transform:uppercase; letter-spacing:0.5px;">Yeni Şifre Tekrar</label>
+                        <input type="password" class="form-control rounded-3 fw-bold"
+                            style="border: 1.5px solid #F5E8EA; background: #FFF8F5; font-family:'Quicksand',sans-serif;">
+                    </div>
+                </div>
+                <button type="button" class="btn btn-accent rounded-pill px-5 py-2 mt-4 fw-bold shadow-sm">Şifreyi Güncelle</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script>
+    // Fotoğraf seçme önizlemesi
+    document.getElementById('avatarInput').addEventListener('change', function(e) {
+        let file = e.target.files[0];
+        if (file) {
+            let reader = new FileReader();
+            reader.onload = function(ev) {
+                document.getElementById('avatarPreview').src = ev.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>
+}

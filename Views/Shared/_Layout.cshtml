@@ -1,0 +1,245 @@
+@using Microsoft.AspNetCore.Identity
+@using System.Security.Claims
+
+<!DOCTYPE html>
+<html lang="tr" class="no-js">
+<head>
+    <script>document.documentElement.classList.remove('no-js');</script>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Bloom & Co. - Taze çiçekler ve özel tasarım buketler" />
+    <title>@ViewData["Title"] — Bloom & Co.</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div class="app-layout">
+        <div class="petal-container" id="petalContainer"></div>
+        <div class="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <!-- SIDEBAR -->
+        <aside class="sidebar" id="mainSidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-brand-icon">
+                    <i class="fa-solid fa-leaf"></i>
+                </div>
+                <h2>Bloom & Co.</h2>
+                <small>Çiçek Atölyesi</small>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <ul>
+                    <li><a asp-controller="Home" asp-action="Index"><i class="fa-solid fa-house"></i> Ana Sayfa</a></li>
+                    <li><a asp-controller="Home" asp-action="Products"><i class="fa-solid fa-spa"></i> Ürünlerimiz</a></li>
+                    <li><a asp-controller="Home" asp-action="Campaigns"><i class="fa-solid fa-tag"></i> Kampanyalar</a></li>
+                    <li><a asp-controller="Home" asp-action="About"><i class="fa-solid fa-heart"></i> Hakkımızda</a></li>
+                    <li><a asp-controller="Home" asp-action="Contact"><i class="fa-solid fa-paper-plane"></i> İletişim</a></li>
+                </ul>
+            </nav>
+            
+            <div class="sidebar-footer">
+                @if (User.Identity!.IsAuthenticated)
+                {
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=FADADD&color=D4728A&size=40" alt="User" width="40" height="40" />
+                        <div>
+                            <div class="user-name">@User.Identity.Name</div>
+                            <div class="user-label">Bloom Üyesi</div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div class="text-center">
+                        <small class="fw-bold text-muted-soft d-block mb-2">Bloom ailesine katılın!</small>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-accent btn-sm w-100">Üye Ol</a>
+                    </div>
+                }
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <div class="main-content">
+            <header class="top-header">
+                <div class="header-left">
+                    <button class="mobile-toggle" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars-staggered"></i>
+                    </button>
+                    <div class="search-bar d-none d-md-flex">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                        <input type="text" placeholder="Çiçek ya da kategori ara...">
+                    </div>
+                </div>
+                <div class="header-right">
+                    @if (User.Identity!.IsAuthenticated)
+                    {
+                        <a asp-controller="Dashboard" asp-action="Cart" class="header-icon" title="Sepetim" id="headerCartIcon"><i class="fa-solid fa-basket-shopping"></i></a>
+                        <a asp-controller="Dashboard" asp-action="Orders" class="header-icon" title="Siparişlerim"><i class="fa-solid fa-truck-fast"></i></a>
+                        <div class="dropdown">
+                            <button class="header-user" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <img src="https://ui-avatars.com/api/?name=@User.Identity.Name&background=FADADD&color=D4728A" alt="Avatar"/>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end shadow-sm border-0 mt-2" style="min-width: 200px;">
+                                <li class="px-3 py-2 border-bottom mb-2">
+                                    <div class="fw-bold">@User.Identity.Name</div>
+                                    <small class="text-muted">Bloom Üyesi</small>
+                                </li>
+                                <li><a class="dropdown-item py-2" asp-controller="Dashboard" asp-action="Profile"><i class="fa-regular fa-user me-2"></i>Profilim</a></li>
+                                @if (User.IsInRole("Admin"))
+                                {
+                                    <li><a class="dropdown-item py-2 text-accent fw-bold" asp-controller="Admin" asp-action="Index"><i class="fa-solid fa-gauge me-2"></i>Admin Paneli</a></li>
+                                }
+                                <li><a class="dropdown-item py-2" asp-controller="Dashboard" asp-action="Discounts"><i class="fa-regular fa-star me-2"></i>İndirimlerim</a></li>
+                                <li><hr class="dropdown-divider mx-2"></li>
+                                <li><a class="dropdown-item py-2 text-danger" asp-controller="Account" asp-action="Logout"><i class="fa-solid fa-arrow-right-from-bracket me-2"></i>Çıkış Yap</a></li>
+                            </ul>
+                        </div>
+                    }
+                    else
+                    {
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-outline-accent btn-sm">Giriş Yap</a>
+                        <a asp-controller="Account" asp-action="Register" class="btn btn-accent btn-sm">Kayıt Ol</a>
+                    }
+                </div>
+            </header>
+            
+            <main role="main" class="content-area">
+                @RenderBody()
+            </main>
+
+            <footer class="main-footer">
+                <div class="container-fluid">
+                    <div class="row g-5">
+                        <div class="col-lg-4 col-md-6 footer-brand">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div class="sidebar-brand-icon m-0" style="width: 48px; height: 48px; font-size: 1.2rem;">
+                                    <i class="fa-solid fa-leaf"></i>
+                                </div>
+                                <h3 class="m-0">Bloom & Co.</h3>
+                            </div>
+                            <p class="text-muted fw-medium pe-lg-5">Doğanın en taze ve zarif renklerini, sevginizle harmanlayıp kapınıza kadar getiriyoruz. Tazelik ve kalite bizim sözümüzdür.</p>
+                            <div class="d-flex gap-3 mt-4">
+                                <a href="#" class="btn btn-outline-accent rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="fa-brands fa-instagram"></i></a>
+                                <a href="#" class="btn btn-outline-accent rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="fa-brands fa-whatsapp"></i></a>
+                                <a href="#" class="btn btn-outline-accent rounded-circle p-0 d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;"><i class="fa-brands fa-tiktok"></i></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-6">
+                            <h5 class="footer-heading">Hızlı Erişim</h5>
+                            <ul class="footer-links">
+                                <li><a asp-controller="Home" asp-action="Index">Ana Sayfa</a></li>
+                                <li><a asp-controller="Home" asp-action="Products">Çiçeklerimiz</a></li>
+                                <li><a asp-controller="Home" asp-action="Campaigns">Kampanyalar</a></li>
+                                <li><a asp-controller="Home" asp-action="About">Hakkımızda</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <h5 class="footer-heading">Kategoriler</h5>
+                            <ul class="footer-links">
+                                <li><a href="/Home/Products">🌹 Gül Buketleri</a></li>
+                                <li><a href="/Home/Products">🌸 Zarif Orkideler</a></li>
+                                <li><a href="/Home/Products">💐 Tasarım Aranjmanlar</a></li>
+                                <li><a href="/Home/Products">🌷 Mevsim Laleleri</a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-3 col-md-6">
+                            <h5 class="footer-heading">İletişim</h5>
+                            <ul class="footer-links">
+                                <li class="text-muted fw-bold"><i class="fa-solid fa-location-dot me-2 text-accent"></i> Çiçek Sokak No:4, İstanbul</li>
+                                <li class="text-muted fw-bold"><i class="fa-solid fa-phone me-2 text-accent"></i> +90 (212) 555 01 23</li>
+                                <li class="text-muted fw-bold"><i class="fa-solid fa-envelope me-2 text-accent"></i> hello@bloomandco.com</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="footer-bottom">
+                        <div>&copy; 2026 Bloom & Co. Tüm hakları saklıdır.</div>
+                        <div class="d-flex gap-4">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" height="20" alt="Mastercard" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" height="15" alt="Visa" />
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/41/TROY_logo.svg/1280px-TROY_logo.svg.png" height="20" alt="Troy" />
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script>
+        function toggleSidebar() {
+            $('#mainSidebar').toggleClass('active');
+            $('.sidebar-overlay').toggleClass('active');
+            $('body').toggleClass('overflow-hidden');
+        }
+
+        // --- Bloom Motion Engine ---
+        $(document).ready(() => {
+            // Safety: Force visible after 3 seconds if animations fail
+            setTimeout(() => {
+                $('.reveal-on-scroll').addClass('force-visible');
+            }, 3000);
+
+            try {
+                // 1. Floating Petals
+                const container = document.getElementById('petalContainer');
+                if (container && window.matchMedia('(prefers-reduced-motion: no-preference)').matches) {
+                    const petalCount = window.innerWidth < 768 ? 8 : 15;
+                    for (let i = 0; i < petalCount; i++) {
+                        createPetal(container);
+                    }
+                }
+
+                // 2. Scroll Reveal
+                const revealCallback = (entries, observer) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            entry.target.classList.add('visible');
+                        }
+                    });
+                };
+                if ('IntersectionObserver' in window) {
+                    const observer = new IntersectionObserver(revealCallback, { threshold: 0.1 });
+                    document.querySelectorAll('.reveal-on-scroll').forEach(el => observer.observe(el));
+                } else {
+                    $('.reveal-on-scroll').addClass('visible');
+                }
+
+                // 3. Cart Pop Animation
+                window.addEventListener('cartUpdated', () => {
+                    const icon = document.getElementById('headerCartIcon');
+                    if (icon) {
+                        icon.classList.add('shake-mini');
+                        setTimeout(() => icon.classList.remove('shake-mini'), 500);
+                    }
+                });
+            } catch (e) {
+                console.error("Motion engine error:", e);
+                $('.reveal-on-scroll').addClass('force-visible');
+            }
+        });
+
+        function createPetal(container) {
+            const petal = document.createElement('div');
+            petal.className = 'petal';
+            const size = Math.random() * 15 + 10 + 'px';
+            petal.style.width = size;
+            petal.style.height = size;
+            petal.style.left = Math.random() * 100 + 'vw';
+            petal.style.animationDuration = Math.random() * 5 + 7 + 's';
+            petal.style.animationDelay = Math.random() * 5 + 's';
+            petal.style.opacity = Math.random() * 0.3 + 0.1;
+            
+            container.appendChild(petal);
+            petal.addEventListener('animationiteration', () => {
+                petal.style.left = Math.random() * 100 + 'vw';
+            });
+        }
+    </script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

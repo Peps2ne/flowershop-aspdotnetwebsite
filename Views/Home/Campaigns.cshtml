@@ -1,0 +1,36 @@
+@{
+    ViewData["Title"] = "Kampanyalar";
+}
+
+<div class="inner-container">
+    <div class="mb-5">
+        <h2 class="fw-bold fs-1" style="color: #3D2C33;">Mevcut Kampanyalar</h2>
+        <p class="text-muted fw-semibold">Bugüne özel çiçek sürprizlerini keşfedin</p>
+    </div>
+
+    <div class="glass-panel p-5 mb-4 hover-lift transition-all">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="hero-badge mb-3">Sınırlı Süre</span>
+                <h3 class="fw-bold text-accent fs-2">Bahar İndirimi!</h3>
+                <p class="fs-5 fw-medium text-muted">Tüm Bahar koleksiyonlarında %20 indirim kazanın. Ödeme sırasında <strong>BAHAR20</strong> kodunu kullanın.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                <a asp-action="Products" class="btn btn-accent btn-lg px-5">Baharı Keşfet</a>
+            </div>
+        </div>
+    </div>
+
+    <div class="glass-panel p-5 mb-4 hover-lift transition-all">
+        <div class="row align-items-center">
+            <div class="col-md-8">
+                <span class="hero-badge mb-3" style="background:#DCEEDC; color:#5C8C6C;">Yeni Üyeler</span>
+                <h3 class="fw-bold text-accent fs-2">İlk Sipariş İndirimi</h3>
+                <p class="fs-5 fw-medium text-muted">Burada yeni misiniz? Kayıt olun ve ilk alışverişinizde anında %10 indirim kazanın.</p>
+            </div>
+            <div class="col-md-4 text-md-end mt-4 mt-md-0">
+                <a asp-controller="Account" asp-action="Register" class="btn btn-outline-accent btn-lg px-5">Kayıt Ol</a>
+            </div>
+        </div>
+    </div>
+</div>

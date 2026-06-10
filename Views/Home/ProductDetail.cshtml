@@ -1,0 +1,191 @@
+@model FlowerShopApp.Models.Product
+@{
+    ViewData["Title"] = Model.Name;
+    var reviews = ViewBag.Reviews as List<FlowerShopApp.Models.Review> ?? new List<FlowerShopApp.Models.Review>();
+    bool isWishlisted = ViewBag.IsWishlisted ?? false;
+}
+
+<div class="inner-container py-5">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <ol class="breadcrumb">
+            <li class="breadcrumb-item"><a asp-action="Index" class="text-decoration-none text-muted">Ana Sayfa</a></li>
+            <li class="breadcrumb-item"><a asp-action="Products" class="text-decoration-none text-muted">Çiçeklerimiz</a></li>
+            <li class="breadcrumb-item active text-accent fw-bold" aria-current="page">@Model.Name</li>
+        </ol>
+    </nav>
+
+    <div class="row g-5">
+        <!-- Image Area -->
+        <div class="col-lg-6">
+            <div class="glass-panel p-3 h-100">
+                <div class="rounded-4 overflow-hidden position-relative shadow-sm" style="width: 100%; aspect-ratio: 4/5;">
+                    <img src="@Model.ImageUrl" class="w-100 h-100" style="object-fit: cover;" alt="@Model.Name" onerror="this.src='https://images.unsplash.com/photo-1519337020834-14c1ef9c7cd3?w=600&q=80'" />
+                    @if (!string.IsNullOrEmpty(Model.Badge))
+                    {
+                        <span class="position-absolute top-0 end-0 m-4 badge bg-@Model.BadgeColor rounded-pill px-4 py-2 shadow-sm fs-6">@Model.Badge</span>
+                    }
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Area -->
+        <div class="col-lg-6 d-flex flex-column justify-content-center">
+            <div class="flower-card-category mb-2">@(Model.Category?.Name ?? "Taze Çiçek")</div>
+            <h1 class="fw-bold display-5 mb-3" style="color: #3D2C33;">@Model.Name</h1>
+
+            <div class="d-flex align-items-center mb-4 gap-3">
+                <div class="d-flex text-warning fs-5">
+                    @for (int i = 1; i <= 5; i++)
+                    {
+                        var avgRating = reviews.Any() ? reviews.Average(r => r.Rating) : 0;
+                        if (i <= Math.Round(avgRating)) { <i class="fa-solid fa-star"></i> }
+                        else { <i class="fa-regular fa-star"></i> }
+                    }
+                </div>
+                <span class="text-muted fw-bold small">(@reviews.Count Müşteri Yorumu)</span>
+            </div>
+
+            <div class="mb-4">
+                <h2 class="fw-bold text-accent display-6 mb-1">
+                    @((new System.Globalization.CultureInfo("tr-TR")).NumberFormat.CurrencySymbol)@Model.Price.ToString("N2", new System.Globalization.CultureInfo("tr-TR")).Replace(new System.Globalization.CultureInfo("tr-TR").NumberFormat.CurrencySymbol, "")
+                </h2>
+                <div class="small fw-bold text-success">
+                    <i class="fa-solid fa-check-circle me-1"></i> Aynı Gün Teslimat Seçeneği
+                </div>
+            </div>
+
+            <p class="fs-5 text-muted fw-medium lh-base mb-5">
+                @Model.Description
+            </p>
+
+            <div class="d-flex gap-3 mb-5">
+                <button class="btn-cart-add btn-lg px-5 py-4 fs-5" onclick="BloomCart.addItem({ id: @Model.Id, name: '@Html.Raw(Model.Name.Replace("'", "\\'"))', price: @Model.Price.ToString(System.Globalization.CultureInfo.InvariantCulture), img: '@Model.ImageUrl' })">
+                    <i class="fa-solid fa-basket-shopping me-2"></i> SEPETE EKLE
+                </button>
+                <button class="btn-wishlist btn-lg @(isWishlisted ? "active" : "")" style="width: 70px; height: 70px;" onclick="toggleWishlistDetail(@Model.Id, this)">
+                    <i class="@(isWishlisted ? "fa-solid" : "fa-regular") fa-heart fs-3"></i>
+                </button>
+            </div>
+
+            <div class="glass-panel p-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <div class="trust-icon" style="width: 45px; height: 45px; background: #DCEEDC; color: #5C8C6C;">
+                        <i class="fa-solid fa-shield-heart"></i>
+                    </div>
+                    <div>
+                        <div class="small fw-bold" style="color: #3D2C33;">Güvenli Alışveriş</div>
+                        <div class="text-muted" style="font-size: 0.75rem;">Yüksek Güvenlikli Ödeme Altyapısı</div>
+                    </div>
+                </div>
+                <div class="text-end">
+                    <div class="small fw-bold text-muted">Stok Durumu:</div>
+                    <div class="fw-bold @(Model.Stock > 0 ? "text-success" : "text-danger")">
+                        @(Model.Stock > 0 ? Model.Stock + " Adet Var" : "Tükendi")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- REVIEWS -->
+    <div class="mt-5 pt-5">
+        <div class="row g-5">
+            <div class="col-lg-7">
+                <h3 class="fw-bold mb-5" style="color: #3D2C33;">Müşteri Deneyimleri</h3>
+                <div class="d-flex flex-column gap-4">
+                    @foreach (var rev in reviews)
+                    {
+                        <div class="glass-panel p-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="fw-bold text-main">@rev.User.Username</div>
+                                    <div class="text-warning small mx-2">
+                                        @for (int i = 1; i <= 5; i++)
+                                        {
+                                            if (i <= rev.Rating) { <i class="fa-solid fa-star"></i> }
+                                            else { <i class="fa-regular fa-star"></i> }
+                                        }
+                                    </div>
+                                </div>
+                                <div class="text-muted small">@rev.CreatedAt.ToString("dd MMM yyyy")</div>
+                            </div>
+                            <p class="text-muted fw-medium mb-0">@rev.Comment</p>
+                        </div>
+                    }
+                    @if (!reviews.Any())
+                    {
+                        <div class="text-center py-5">
+                            <i class="fa-regular fa-comment-dots fs-1 text-muted mb-3 d-block"></i>
+                            <p class="text-muted fw-bold">Henüz yorum yapılmamış. İlk yorumu siz yapın!</p>
+                        </div>
+                    }
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                @if (User.Identity!.IsAuthenticated)
+                {
+                    <div class="glass-panel p-5 sticky-top" style="top: 100px;">
+                        <h4 class="fw-bold mb-4">Deneyiminizi Paylaşın</h4>
+                        <form asp-action="AddReview" method="post">
+                            <input type="hidden" name="productId" value="@Model.Id" />
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">PUANINIZ</label>
+                                <select name="rating" class="form-select border-0 px-3 py-3" style="background: #F8F9FA; border-radius: 12px; font-weight: 600;" required>
+                                    <option value="5">⭐⭐⭐⭐⭐ Harika</option>
+                                    <option value="4">⭐⭐⭐⭐ Çok İyi</option>
+                                    <option value="3">⭐⭐⭐ Normal</option>
+                                    <option value="2">⭐⭐ Kötü</option>
+                                    <option value="1">⭐ Çok Kötü</option>
+                                </select>
+                            </div>
+                            <div class="mb-4">
+                                <label class="form-label small fw-bold text-muted">MESAJINIZ</label>
+                                <textarea name="comment" class="form-control border-0 px-3 py-3" style="background: #F8F9FA; border-radius: 12px; font-weight: 500;" rows="5" placeholder="Ürün hakkında ne düşünüyorsunuz?" required></textarea>
+                            </div>
+                            <button type="submit" class="btn btn-accent btn-lg w-100 rounded-pill py-3 fw-bold">Yorumu Gönder</button>
+                        </form>
+                    </div>
+                }
+                else
+                {
+                    <div class="glass-panel p-5 text-center">
+                        <i class="fa-solid fa-lock fs-1 text-accent mb-4"></i>
+                        <h4 class="fw-bold mb-3">Yorum Yapmak İçin Giriş Yapın</h4>
+                        <p class="text-muted fw-medium mb-4">Bloom & Co. ailesine katılarak deneyimlerinizi paylaşabilir ve indirimlerden faydalanabilirsiniz.</p>
+                        <a asp-controller="Account" asp-action="Login" class="btn btn-accent rounded-pill px-5 py-3 fw-bold">Hemen Giriş Yap</a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    function toggleWishlistDetail(id, btn) {
+        $.post('/Home/ToggleWishlist', { productId: id }, function(res) {
+            if (res.success) {
+                $(btn).toggleClass('active');
+                const icon = $(btn).find('i');
+                if (res.added) {
+                    icon.removeClass('fa-regular').addClass('fa-solid');
+                    Swal.fire({
+                        title: 'Favorilere Eklendi! ❤️',
+                        timer: 1500,
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        background: '#FFF8F5'
+                    });
+                } else {
+                    icon.removeClass('fa-solid').addClass('fa-regular');
+                }
+            } else {
+                Swal.fire('Bilgi', 'Favorilere eklemek için lütfen giriş yapın.', 'info');
+            }
+        });
+    }
+</script>
+}

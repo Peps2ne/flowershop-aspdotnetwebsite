@@ -1,0 +1,73 @@
+@model FlowerShopApp.Models.Order
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = $"Sipariş #{Model.Id} Detayı";
+}
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="p-4 border-bottom d-flex justify-content-between align-items-center">
+                <h5 class="fw-bold m-0">Sipariş Kalemleri</h5>
+                <span class="text-muted small">@Model.OrderDate.ToString("dd MMMM yyyy HH:mm")</span>
+            </div>
+            <div class="p-4">
+                @foreach (var item in Model.Items)
+                {
+                    <div class="d-flex align-items-center gap-3 pb-3 mb-3 border-bottom last-border-0">
+                        <img src="@item.ProductImage" class="rounded-3" style="width:80px; height:80px; object-fit:cover;" />
+                        <div class="flex-grow-1">
+                            <h6 class="fw-bold mb-0">@item.ProductName</h6>
+                            <small class="text-muted">Adet: @item.Quantity</small>
+                        </div>
+                        <span class="fw-bold text-accent">@item.Price.ToString("0.00") ₺</span>
+                    </div>
+                }
+                <div class="d-flex justify-content-between fw-bold fs-5 pt-3">
+                    <span>Toplam</span>
+                    <span class="text-accent">@Model.TotalAmount.ToString("0.00") ₺</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 mb-3">
+            <div class="p-4 border-bottom"><h5 class="fw-bold m-0">Teslimat Bilgileri</h5></div>
+            <div class="p-4">
+                <p class="text-muted mb-2"><i class="fa-solid fa-location-dot text-accent me-2"></i>@Model.ShippingAddress</p>
+                <p class="text-muted mb-0"><i class="fa-solid fa-credit-card text-accent me-2"></i>**** @Model.CardLast4</p>
+            </div>
+        </div>
+        <div class="card border-0 shadow-sm rounded-4">
+            <div class="p-4 border-bottom"><h5 class="fw-bold m-0">Kargo Durumu Güncelle</h5></div>
+            <div class="p-4">
+                <form asp-action="UpdateStatus" method="post">
+                    <input type="hidden" name="id" value="@Model.Id" />
+                    <div class="d-grid gap-2">
+                        <button name="status" value="0" type="submit"
+                                class="btn @(Model.Status == FlowerShopApp.Models.OrderStatus.Pending ? "btn-warning" : "btn-outline-warning") rounded-pill fw-bold">
+                            📦 Hazırlanıyor
+                        </button>
+                        <button name="status" value="1" type="submit"
+                                class="btn @(Model.Status == FlowerShopApp.Models.OrderStatus.Shipped ? "btn-info text-white" : "btn-outline-info") rounded-pill fw-bold">
+                            🚚 Yola Çıktı
+                        </button>
+                        <button name="status" value="2" type="submit"
+                                class="btn @(Model.Status == FlowerShopApp.Models.OrderStatus.Delivered ? "btn-success" : "btn-outline-success") rounded-pill fw-bold">
+                            ✅ Teslim Edildi
+                        </button>
+                        <button name="status" value="3" type="submit"
+                                class="btn @(Model.Status == FlowerShopApp.Models.OrderStatus.Cancelled ? "btn-danger" : "btn-outline-danger") rounded-pill fw-bold">
+                            ❌ İptal Et
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .last-border-0:last-child { border-bottom: 0 !important; margin-bottom: 0 !important; padding-bottom: 0 !important; }
+</style>

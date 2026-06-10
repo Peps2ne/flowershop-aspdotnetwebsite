@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bloom & Co Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { background-color: #F8F9FA; display: flex; height: 100vh; overflow: hidden; }
+        .admin-sidebar { 
+            width: 260px; 
+            background: #fff; 
+            border-right: 1px solid #E9ECEF;
+            display: flex;
+            flex-direction: column;
+        }
+        .admin-main { flex: 1; overflow-y: auto; background: #FFF8F5; }
+        .admin-nav .nav-link { 
+            color: #495057; 
+            font-weight: 600; 
+            padding: 12px 20px;
+            margin: 4px 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .admin-nav .nav-link:hover, .admin-nav .nav-link.active {
+            background-color: var(--pink-light);
+            color: var(--accent);
+        }
+        .admin-nav .nav-link i { width: 24px; text-align: center; }
+        .admin-header {
+            padding: 20px 30px;
+            background: #fff;
+            border-bottom: 1px solid #E9ECEF;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .text-accent { color: #D4728A !important; }
+    </style>
+</head>
+<body>
+    @if (User.Identity!.IsAuthenticated && User.IsInRole("Admin"))
+    {
+        <div class="admin-sidebar shadow-sm">
+            <div class="p-4 text-center border-bottom">
+                <i class="fa-solid fa-leaf text-accent fs-1 mb-2"></i>
+                <h4 class="fw-bold m-0" style="color: #3D2C33;">Bloom & Co</h4>
+                <small class="text-muted">Yönetim Paneli</small>
+            </div>
+            <nav class="nav flex-column admin-nav py-3">
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "Admin" ? "active" : "")" asp-controller="Admin" asp-action="Index">
+                    <i class="fa-solid fa-chart-pie"></i> Dashboard
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminProducts" ? "active" : "")" asp-controller="AdminProducts" asp-action="Index">
+                    <i class="fa-solid fa-seedling"></i> Ürünler
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminOrders" ? "active" : "")" asp-controller="AdminOrders" asp-action="Index">
+                    <i class="fa-solid fa-truck-ramp-box"></i> Siparişler
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminUsers" ? "active" : "")" asp-controller="AdminUsers" asp-action="Index">
+                    <i class="fa-solid fa-users"></i> Kullanıcılar
+                </a>
+                <a class="nav-link @(ViewContext.RouteData.Values["Controller"]?.ToString() == "AdminDiscounts" ? "active" : "")" asp-controller="AdminDiscounts" asp-action="Index">
+                    <i class="fa-solid fa-tags"></i> İndirim Kodları
+                </a>
+            </nav>
+            <div class="mt-auto p-4 border-top">
+                <a asp-controller="Admin" asp-action="Logout" class="btn btn-outline-danger w-100 rounded-pill fw-bold">
+                    <i class="fa-solid fa-sign-out-alt me-2"></i> Çıkış Yap
+                </a>
+            </div>
+        </div>
+        <div class="admin-main">
+            <div class="admin-header">
+                <h4 class="fw-bold m-0 text-dark">@ViewData["Title"]</h4>
+                <div class="d-flex align-items-center gap-3">
+                    <span class="badge bg-success rounded-pill px-3 py-2">Aktif</span>
+                    <i class="fa-solid fa-user-circle fs-3 text-secondary"></i>
+                </div>
+            </div>
+            <div class="p-4">
+                @RenderBody()
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="w-100 h-100 d-flex flex-column" style="background-color: #FFF8F5;">
+            @RenderBody()
+        </div>
+    }
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

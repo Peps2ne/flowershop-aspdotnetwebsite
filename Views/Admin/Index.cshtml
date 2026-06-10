@@ -1,0 +1,88 @@
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="row g-4 mb-4">
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 d-flex flex-row align-items-center gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: #DCEEDC; color: #5C8C6C;">
+                <i class="fa-solid fa-seedling fs-3"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-bold text-uppercase badge-text">Ürünler</span>
+                <h3 class="fw-bold m-0" style="color: #3D2C33;">Yönetilen</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 d-flex flex-row align-items-center gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: #FADADD; color: #D4728A;">
+                <i class="fa-solid fa-boxes-stacked fs-3"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-bold text-uppercase badge-text">Siparişler</span>
+                <h3 class="fw-bold m-0" style="color: #3D2C33;">Aktif</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 d-flex flex-row align-items-center gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: #E2E3F3; color: #6D72A3;">
+                <i class="fa-solid fa-users fs-3"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-bold text-uppercase badge-text">Kayıtlı Profil</span>
+                <h3 class="fw-bold m-0" style="color: #3D2C33;">Müşteriler</h3>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="card border-0 shadow-sm rounded-4 p-4 d-flex flex-row align-items-center gap-3">
+            <div class="rounded-circle d-flex align-items-center justify-content-center" style="width: 60px; height: 60px; background-color: #FFD6C9; color: #C07060;">
+                <i class="fa-solid fa-tag fs-3"></i>
+            </div>
+            <div>
+                <span class="text-muted small fw-bold text-uppercase badge-text">Kampanyalar</span>
+                <h3 class="fw-bold m-0" style="color: #3D2C33;">İndirimler</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4">
+    <div class="col-lg-8">
+        <div class="card border-0 shadow-sm rounded-4 p-4 mb-4" style="background: white;">
+            <h5 class="fw-bold mb-3" style="color: #3D2C33;"><i class="fa-solid fa-house-chimney text-accent me-2"></i> Bloom & Co Yönetim</h5>
+            <p class="text-muted mb-0">
+                Bloom & Co yönetim paneline hoş geldiniz. Mağazanızın ürün envanterini yenileyebilir, gelen siparişleri takip edebilir ve indirim kampanyalarını yönetebilirsiniz.
+            </p>
+        </div>
+        
+        <div class="card border-0 shadow-sm rounded-4 overflow-hidden" style="background: white;">
+            <div class="p-4 border-bottom bg-light d-flex justify-content-between align-items-center">
+                <h6 class="fw-bold m-0 text-uppercase small" style="letter-spacing: 1px; color: #8E7B82;">Hızlı İşlemler</h6>
+            </div>
+            <div class="p-4 d-flex gap-3 flex-wrap">
+                <a asp-controller="AdminProducts" asp-action="Create" class="btn btn-outline-accent rounded-pill px-4 fw-bold">
+                    <i class="fa-solid fa-plus me-2"></i> Yeni Çiçek Ekle
+                </a>
+                <a asp-controller="AdminDiscounts" asp-action="Index" class="btn btn-outline-accent rounded-pill px-4 fw-bold">
+                    <i class="fa-solid fa-tag me-2"></i> İndirim Tanımla
+                </a>
+                <a asp-controller="AdminOrders" asp-action="Index" class="btn btn-outline-accent rounded-pill px-4 fw-bold">
+                    <i class="fa-solid fa-box me-2"></i> Siparişler
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card border-0 shadow-sm rounded-4 p-4 text-white h-100 d-flex flex-column justify-content-center align-items-center text-center" style="background: linear-gradient(135deg, #D4728A 0%, #BE5876 100%);">
+            <i class="fa-solid fa-seedling fs-1 mb-3 opacity-50"></i>
+            <h4 class="fw-bold">Sistem Durumu</h4>
+            <p class="opacity-75 small">Tüm servisler aktif.</p>
+            <div class="fs-5 fw-bold mt-2">@DateTime.Now.ToString("HH:mm")</div>
+        </div>
+    </div>
+</div>

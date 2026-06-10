@@ -1,0 +1,32 @@
+@model FlowerShopApp.Models.Discount
+
+@{
+    Layout = "_AdminLayout";
+    ViewData["Title"] = "Yeni İndirim Kodu";
+}
+
+<div class="card border-0 shadow-sm rounded-4 p-4" style="max-width: 500px;">
+    <form asp-action="Create" method="post">
+        <div class="row g-3">
+            <div class="col-12">
+                <label class="fw-bold small text-uppercase text-muted mb-1">İndirim Kodu</label>
+                <input asp-for="Code" class="form-control rounded-3 p-3 fw-bold text-uppercase" placeholder="BAHAR20" required />
+                <small class="text-muted">Kod otomatik olarak büyük harfe çevrilir.</small>
+            </div>
+            <div class="col-12">
+                <label class="fw-bold small text-uppercase text-muted mb-1">İndirim Oranı (%)</label>
+                <input asp-for="DiscountPercentage" type="number" min="1" max="100" class="form-control rounded-3 p-3" placeholder="20" required />
+            </div>
+            <div class="col-12">
+                <div class="form-check form-switch">
+                    <input asp-for="IsActive" class="form-check-input" style="width: 2.5rem; height: 1.5rem;" />
+                    <label class="form-check-label fw-bold ms-2 mt-1">Kodu Aktif Olarak Başlat</label>
+                </div>
+            </div>
+            <div class="col-12 d-flex gap-3 mt-2">
+                <button type="submit" class="btn btn-accent rounded-pill px-5 py-2 fw-bold"><i class="fa-solid fa-save me-2"></i>Oluştur</button>
+                <a asp-action="Index" class="btn btn-outline-secondary rounded-pill px-4 py-2 fw-bold">İptal</a>
+            </div>
+        </div>
+    </form>
+</div>

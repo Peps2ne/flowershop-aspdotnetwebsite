@@ -1,0 +1,53 @@
+@{
+    Layout = null;
+    ViewData["Title"] = "Yönetici Girişi";
+}
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Bloom & Co Admin</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { background: linear-gradient(135deg, #3D2C33, var(--accent)); display: flex; align-items: center; justify-content: center; height: 100vh; font-family: 'Quicksand', sans-serif;}
+        .login-card { background: #fff; padding: 3rem; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.3); max-width: 400px; width: 100%; text-align: center;}
+        .form-control { border-radius: 8px; padding: 12px 15px; }
+        .btn-login { background: var(--accent); color: white; font-weight: bold; padding: 12px; border-radius: 8px; border: none; width: 100%; margin-top: 15px; transition: 0.3s;}
+        .btn-login:hover { background: #BE5876; transform: translateY(-2px); color: white; }
+    </style>
+</head>
+<body>
+    <div class="login-card">
+        <i class="fa-solid fa-leaf text-accent fs-1 mb-3"></i>
+        <h3 class="fw-bold mb-1" style="color: #3D2C33;">Bloom & Co Admin</h3>
+        <p class="text-muted mb-4 small">Yönetim paneline giriş yapın</p>
+
+        @if (ViewBag.Error != null)
+        {
+            <div class="alert alert-danger rounded-3 p-2 small">@ViewBag.Error</div>
+        }
+
+        <form asp-action="Login" method="post">
+            <div class="mb-3 text-start">
+                <label class="fw-bold small text-muted mb-1">Kullanıcı Adı</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-user"></i></span>
+                    <input type="text" name="username" class="form-control border-start-0 bg-light" required autofocus />
+                </div>
+            </div>
+            <div class="mb-4 text-start">
+                <label class="fw-bold small text-muted mb-1">Şifre</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-light border-end-0"><i class="fa-solid fa-lock"></i></span>
+                    <input type="password" name="password" class="form-control border-start-0 bg-light" required />
+                </div>
+            </div>
+            <button type="submit" class="btn-login"><i class="fa-solid fa-sign-in-alt me-2"></i> Giriş Yap</button>
+        </form>
+    </div>
+</body>
+</html>
